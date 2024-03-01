@@ -4,7 +4,7 @@ package com.ayushsingh.cacmp_backend.util.exceptionUtil;
  */
 public class ApiException extends RuntimeException{
     
-    ApiException(String message){
+    public ApiException(String message){
         super(message);
     }
 }
