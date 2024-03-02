@@ -1,6 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.dtos.consumerDtos;
 
-import com.ayushsingh.cacmp_backend.models.entities.ConsumerAddress;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerAddressDtos.ConsumerAddressCreateDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class ConsumerRegisterDto {
 
     private String gender;
 
-    private ConsumerAddress address;
+    private ConsumerAddressCreateDto address;
 
     private Set<String> roles;
 

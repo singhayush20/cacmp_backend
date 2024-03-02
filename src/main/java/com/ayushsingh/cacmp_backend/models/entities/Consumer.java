@@ -67,7 +67,7 @@ public class Consumer {
     private Set<Complaint> complaints = new HashSet<Complaint>();
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "consumers_consumer_role", joinColumns = @JoinColumn(name = "consuner_id", referencedColumnName = "consumer_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+    @JoinTable(name = "consumers_consumer_role", joinColumns = @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     private Set<ConsumerRole> roles;
 
     @CreatedDate

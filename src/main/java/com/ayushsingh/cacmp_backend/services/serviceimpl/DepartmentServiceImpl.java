@@ -50,4 +50,9 @@ public class DepartmentServiceImpl implements DepartmentService {
             return department.getDeptToken();
         }
     }
+
+    @Override
+    public String getDepartmentToken(String username) {
+        return departmentRepository.findTokenByUsername(username);
+    }
 }

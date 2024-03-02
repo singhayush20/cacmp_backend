@@ -1,7 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.securityModels.jwt;
 
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
-import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

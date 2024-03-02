@@ -55,7 +55,7 @@ public class JwtUtil {
         Date issueDate = new Date(System.currentTimeMillis());
         System.out.println("issueDate: " + issueDate + " time: " + issueDate.getTime() + " issueDate formatted: "
                 + issueDate);
-        Date expirationDate = new Date(System.currentTimeMillis() + AppConstants.EXPIRATION_TIME
+        Date expirationDate = new Date(System.currentTimeMillis() + AppConstants.ACCESS_TOKEN_EXPIRATION_TIME
         );
         System.out.println("Expiration date: " + expirationDate + " formatted: " + expirationDate);
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(issueDate)

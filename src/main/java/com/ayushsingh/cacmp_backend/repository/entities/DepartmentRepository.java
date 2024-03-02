@@ -14,4 +14,7 @@ public interface DepartmentRepository extends JpaRepository<Department,Long> {
     Optional<Department> findByUsername(String username);
 
     Boolean existsByUsername(String username);
+
+    @Query("SELECT d.deptToken FROM Department d WHERE d.username = ?1")
+    String findTokenByUsername(String username);
 }

@@ -28,7 +28,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table
-@Entity(name = "cosumer_address")
+@Entity(name = "consumer_address")
 public class ConsumerAddress {
 
     @Id
@@ -61,9 +61,6 @@ public class ConsumerAddress {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
-
-    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Consumer consumer;
 
     @LastModifiedDate
     @UpdateTimestamp

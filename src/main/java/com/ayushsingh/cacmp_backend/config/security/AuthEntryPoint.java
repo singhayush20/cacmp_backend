@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend;
+package com.ayushsingh.cacmp_backend.config.security;
 
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;

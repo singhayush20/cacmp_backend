@@ -4,7 +4,9 @@ import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerRegisterDto
 
 public interface ConsumerService {
 
-    public Boolean isConsumerPresent(String email);
+    Boolean isConsumerPresent(String email);
 
-    public String registerConsumer(ConsumerRegisterDto consumerRegisterDto);
+    String registerConsumer(ConsumerRegisterDto consumerRegisterDto);
+
+    String getConsumerToken(String email);
 }

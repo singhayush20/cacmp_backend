@@ -11,12 +11,13 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     Optional<RefreshToken> findByRefreshToken(String refreshToken);
 
     @Query("SELECT rt FROM RefreshToken rt WHERE "
-            + "(TYPE(rt) = :type) AND "
+            + "(rt.tokenType = :type) AND "
             + "CASE "
-            + "WHEN TYPE(rt) = 'ConsumerRefreshToken' THEN rt.consumer.consumerId = :id "
-            + "WHEN TYPE(rt) = 'UserRefreshToken' THEN rt.user.userId = :id "
-            + "WHEN TYPE(rt) = 'DepartmentRefreshToken' THEN rt.department.departmentId = :id "
+            + "WHEN rt.tokenType = 'CONSUMER' THEN rt.consumer.consumerId = :id "
+            + "WHEN rt.tokenType = 'USER' THEN rt.user.userId = :id "
+            + "WHEN rt.tokenType = 'DEPARTMENT' THEN rt.department.departmentId = :id "
             + "ELSE NULL "
             + "END IS NOT NULL")
     Optional<RefreshToken> findByTypeAndId(@Param("type") String type, @Param("id") Long id);
+
 }

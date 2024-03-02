@@ -8,5 +8,6 @@ public interface UserService {
 
     public String registerUser(UserRegisterDto userDto);
 
+    public String getUserToken(String username);
 
 }

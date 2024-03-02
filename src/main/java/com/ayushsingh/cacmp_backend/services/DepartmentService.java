@@ -7,4 +7,6 @@ public interface DepartmentService {
      Boolean isDepartmentCredentialsPresent(String username);
 
     String registerDepartment(DepartmentRegisterDto departmentDto);
+
+    String getDepartmentToken(String username);
 }

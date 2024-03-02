@@ -26,7 +26,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_URLS = {};
+    private static final String[] PUBLIC_URLS = {
+            "/api/v1/consumer/login",
+            "/api/v1/consumer/register",
+            "/api/v1/consumer/refresh-token",
+            "/api/v1/department/login",
+            "/api/v1/department/register",
+            "/api/v1/department/refresh-token",
+            "/api/v1/user/login",
+            "/api/v1/user/register",
+            "/api/v1/user/refresh-token"
+    };
 
 
     private final AuthenticationEntryPoint authEntryPoint;

@@ -16,11 +16,13 @@ import java.time.Instant;
 @Table(name="refresh_tokens")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "token_type", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("REFRESH_TOKEN")
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long refreshTokenId;
+
+    @Column(name = "token_type", insertable = false,updatable = false)
+    private String tokenType;
 
     @Column(name = "refresh_token", unique = true)
     private String refreshToken;

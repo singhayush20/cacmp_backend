@@ -52,5 +52,10 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    public String getUserToken(String username) {
+        return userRepository.findTokenByUsername(username);
+    }
+
 
 }
