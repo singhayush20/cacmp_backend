@@ -18,7 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.UUID;
+
+import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,10 +27,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.ayushsingh.cacmp_backend.models.roles.ConsumerRole;
-
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Date;
 
 @Table
 @Entity(name = "consumer")
@@ -88,5 +85,20 @@ public class Consumer {
         if (this.consumerToken == null) {
             this.consumerToken = UUID.randomUUID().toString();
         }
+
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Consumer consumer = (Consumer) o;
+        return Objects.equals(email, consumer.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }

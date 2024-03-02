@@ -1,8 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.entities;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -30,7 +28,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -90,4 +87,17 @@ public class Complaint {
         }
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Complaint complaint = (Complaint) o;
+        return Objects.equals(complaintId, complaint.complaintId) && Objects.equals(complaintSubject, complaint.complaintSubject);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(complaintId, complaintSubject);
+    }
 }

@@ -13,7 +13,7 @@ public class ConsumerAuthority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return this.consumerRole.getRole();
+        return this.consumerRole.getRoleName();
     }
 
 }

@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -74,5 +75,18 @@ public class ConsumerAddress {
         if (this.addressToken == null) {
             this.addressToken = UUID.randomUUID().toString();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConsumerAddress that = (ConsumerAddress) o;
+        return Objects.equals(houseNo, that.houseNo) && Objects.equals(locality, that.locality) && Objects.equals(wardNo, that.wardNo) && Objects.equals(pincode, that.pincode) && Objects.equals(city, that.city) && Objects.equals(state, that.state);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(houseNo, locality, wardNo, pincode, city, state);
     }
 }

@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Objects;
 import java.util.Set;
 
 import com.ayushsingh.cacmp_backend.models.entities.Department;
@@ -28,8 +30,21 @@ public class DepartmentRole {
     private Long roleId;
 
     @Column(name = "role", nullable = false, unique = true)
-    private String role;
+    private String roleName;
 
     @ManyToMany(mappedBy = "roles")
     private Set<Department> departments;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DepartmentRole that = (DepartmentRole) o;
+        return Objects.equals(roleName, that.roleName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roleName);
+    }
 }

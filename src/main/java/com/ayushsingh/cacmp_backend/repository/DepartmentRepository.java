@@ -12,4 +12,6 @@ public interface DepartmentRepository extends JpaRepository<Department,Long> {
 
     @Query("SELECT d FROM Department d WHERE d.username = ?1")
     Optional<Department> findByUsername(String username);
+
+    Boolean existsByUsername(String username);
 }

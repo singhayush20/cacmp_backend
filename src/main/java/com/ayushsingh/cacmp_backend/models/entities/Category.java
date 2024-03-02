@@ -1,9 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.entities;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -74,5 +71,18 @@ public class Category {
         if (this.categoryToken == null) {
             this.categoryToken = UUID.randomUUID().toString();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(categoryId, category.categoryId) && Objects.equals(categoryToken, category.categoryToken) && Objects.equals(categoryName, category.categoryName) && Objects.equals(categoryDescription, category.categoryDescription) && Objects.equals(department, category.department) && Objects.equals(complaints, category.complaints) && Objects.equals(createdAt, category.createdAt) && Objects.equals(updatedAt, category.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(categoryName);
     }
 }

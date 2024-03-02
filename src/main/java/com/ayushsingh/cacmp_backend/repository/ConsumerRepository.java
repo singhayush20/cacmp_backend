@@ -11,4 +11,6 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
     @Query("select c from Consumer c where c.email = ?1")
     Optional<Consumer> findByEmail(String username);
+
+    Boolean existsByEmail(String email);
 }
