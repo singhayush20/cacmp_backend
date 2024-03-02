@@ -2,7 +2,7 @@ package com.ayushsingh.cacmp_backend.config.security.service;
 
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
 import com.ayushsingh.cacmp_backend.models.securityModels.entity.SecurityConsumer;
-import com.ayushsingh.cacmp_backend.repository.ConsumerRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.ConsumerRepository;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

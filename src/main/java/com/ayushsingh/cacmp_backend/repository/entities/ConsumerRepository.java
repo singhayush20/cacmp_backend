@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend.repository;
+package com.ayushsingh.cacmp_backend.repository.entities;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
-    @Query("select c from Consumer c where c.email = ?1")
+    @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.email = ?1")
     Optional<Consumer> findByEmail(String username);
 
     Boolean existsByEmail(String email);

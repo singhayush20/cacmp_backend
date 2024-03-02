@@ -12,6 +12,6 @@ public class DepartmentAuthority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return departmentRole.getRole();
+        return departmentRole.getRoleName();
     }
 }

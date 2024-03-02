@@ -39,7 +39,7 @@ public class Consumer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "consumer_id")
-    private Long cosumerId;
+    private Long consumerId;
 
     @Column(name = "consumer_token", nullable = false, unique = true)
     private String consumerToken;
@@ -80,13 +80,15 @@ public class Consumer {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Column(name = "is_email_verified",columnDefinition = "boolean default false",nullable = false)
+    private Boolean isEmailVerified;
+
+
     @PrePersist
     public void generateToken() {
         if (this.consumerToken == null) {
             this.consumerToken = UUID.randomUUID().toString();
         }
-
-
     }
 
     @Override

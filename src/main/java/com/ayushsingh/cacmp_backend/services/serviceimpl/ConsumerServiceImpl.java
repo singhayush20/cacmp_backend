@@ -3,7 +3,7 @@ package com.ayushsingh.cacmp_backend.services.serviceimpl;
 import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerRegisterDto;
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
 import com.ayushsingh.cacmp_backend.models.roles.ConsumerRole;
-import com.ayushsingh.cacmp_backend.repository.ConsumerRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.ConsumerRepository;
 import com.ayushsingh.cacmp_backend.services.ConsumerRoleService;
 import com.ayushsingh.cacmp_backend.services.ConsumerService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;

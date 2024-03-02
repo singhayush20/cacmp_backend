@@ -51,6 +51,6 @@ public class SecurityConsumer implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.consumer.getIsEmailVerified();
     }
 }

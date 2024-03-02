@@ -3,7 +3,7 @@ package com.ayushsingh.cacmp_backend.services.serviceimpl;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
 import com.ayushsingh.cacmp_backend.models.entities.Department;
 import com.ayushsingh.cacmp_backend.models.roles.DepartmentRole;
-import com.ayushsingh.cacmp_backend.repository.DepartmentRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.services.DepartmentRoleService;
 import com.ayushsingh.cacmp_backend.services.DepartmentService;
 import lombok.RequiredArgsConstructor;

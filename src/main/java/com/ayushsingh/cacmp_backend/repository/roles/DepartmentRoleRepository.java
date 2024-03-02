@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend.repository;
+package com.ayushsingh.cacmp_backend.repository.roles;
 
 import com.ayushsingh.cacmp_backend.models.roles.DepartmentRole;
 import org.springframework.data.jpa.repository.JpaRepository;

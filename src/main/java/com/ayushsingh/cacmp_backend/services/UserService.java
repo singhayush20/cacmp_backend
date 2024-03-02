@@ -7,4 +7,6 @@ public interface UserService {
     public Boolean isUserPresent(String username);
 
     public String registerUser(UserRegisterDto userDto);
+
+
 }

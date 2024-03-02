@@ -1,7 +1,7 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
 import com.ayushsingh.cacmp_backend.models.roles.ConsumerRole;
-import com.ayushsingh.cacmp_backend.repository.ConsumerRoleRepository;
+import com.ayushsingh.cacmp_backend.repository.roles.ConsumerRoleRepository;
 import com.ayushsingh.cacmp_backend.services.ConsumerRoleService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import lombok.RequiredArgsConstructor;

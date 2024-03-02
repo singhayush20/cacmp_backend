@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend.repository;
+package com.ayushsingh.cacmp_backend.repository.entities;
 
 import com.ayushsingh.cacmp_backend.models.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
