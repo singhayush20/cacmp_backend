@@ -33,8 +33,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.ayushsingh.cacmp_backend.constants.AppConstants.AUTH_HEADER;
+import static com.ayushsingh.cacmp_backend.constants.AppConstants.PUBLIC_URLS;
 
 public class CustomAuthFilter extends OncePerRequestFilter {
 
@@ -90,8 +92,22 @@ public class CustomAuthFilter extends OncePerRequestFilter {
             System.out.println("Header token: " + headerToken);
             //-if still not found, return
             if (headerToken == null) {
-                filterChain.doFilter(request, response);
-                return;
+                System.out.println("Token is not present");
+                //-match uri with public urls
+              try{
+                  boolean isPublicUrl = Arrays.stream(PUBLIC_URLS).anyMatch(uri::endsWith);
+                  if(isPublicUrl) {
+                      filterChain.doFilter(request, response);
+                      return;
+                  }
+                  else{
+                      throw new ApiException("Access token is not present");
+                  }
+              }
+              catch (ApiException e){
+                  exceptionResolver.resolveException(request, response, null, e);
+                  return;
+              }
             }
             UserDetails userDetails = null;
             try {

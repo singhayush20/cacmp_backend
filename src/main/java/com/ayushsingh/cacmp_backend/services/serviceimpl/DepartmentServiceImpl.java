@@ -1,17 +1,23 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
+import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
 import com.ayushsingh.cacmp_backend.models.entities.Department;
 import com.ayushsingh.cacmp_backend.models.roles.DepartmentRole;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.services.DepartmentRoleService;
 import com.ayushsingh.cacmp_backend.services.DepartmentService;
+import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -22,6 +28,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final DepartmentRoleService departmentRoleService;
+    private final ModelMapper modelMapper;
     @Override
     public Boolean isDepartmentCredentialsPresent(String username) {
         return departmentRepository.existsByUsername(username);
@@ -55,4 +62,32 @@ public class DepartmentServiceImpl implements DepartmentService {
     public String getDepartmentToken(String username) {
         return departmentRepository.findTokenByUsername(username);
     }
+
+    @Override
+    public List<DepartmentDetailsDto> listAllDepartments() {
+        List<Department> departments=departmentRepository.findAll();
+        List<DepartmentDetailsDto> departmentDetailsDtos=departments.stream().map(department -> {
+            return this.modelMapper.map(department,DepartmentDetailsDto.class);
+        }).toList();
+        return departmentDetailsDtos;
+    }
+
+    @Transactional
+    @Override
+    public void deleteDepartment(String departmentToken) {
+        departmentRepository.deleteByDeptToken(departmentToken);
+    }
+
+    @Override
+    public DepartmentDetailsDto getDepartment(String departmentToken) {
+        Optional<Department> departmentOptional = departmentRepository.findByDeptToken(departmentToken);
+        if(departmentOptional.isEmpty()){
+            throw new ApiException("Department with department token: "+departmentToken+" does not exist");
+        }
+        else{
+            return this.modelMapper.map(departmentOptional.get(),DepartmentDetailsDto.class);
+        }
+    }
+
+
 }

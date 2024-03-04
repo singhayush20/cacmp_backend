@@ -22,11 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
 
-        if(user.isEmpty()){
-            throw new ApiException("User not found with username: "+username);
-        }
-        else{
-            return new SecurityUser(user.get());
-        }
+        return user.map(SecurityUser::new).orElse(null);
     }
 }

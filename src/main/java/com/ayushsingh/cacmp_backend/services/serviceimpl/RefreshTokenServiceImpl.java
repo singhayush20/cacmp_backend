@@ -14,6 +14,7 @@ import com.ayushsingh.cacmp_backend.repository.entities.UserRepository;
 import com.ayushsingh.cacmp_backend.repository.jwt.RefreshTokenRepository;
 import com.ayushsingh.cacmp_backend.services.RefreshTokenService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
+import com.ayushsingh.cacmp_backend.util.exceptionUtil.RefreshTokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -104,7 +105,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken token=this.refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(()->new RuntimeException("No such token found"));
         if (token.getExpiresAt().isBefore(Instant.now())) {
             refreshTokenRepository.delete(token);
-            return false;
+            throw new RefreshTokenExpiredException("Refresh Token is expired!");
         }
         return true;
     }

@@ -69,7 +69,10 @@ There are several free map services available that you can integrate into your p
 
 2. **OpenStreetMap (OSM)**: OpenStreetMap is a collaborative mapping project that provides free, editable maps of the world. You can use OSM data and tile servers to display maps on your website. OSM offers various tile layers and APIs for integrating maps into web applications.
 
-3. **Mapbox**: Mapbox provides a range of mapping tools and services, including customizable maps, geocoding, routing, and spatial analysis. They offer a free tier with generous usage limits, making it suitable for small to medium-scale projects.
+3. **Mapbox**: Mapbox provides a range of mapping tools and services, including customizable maps, geocoding, routing, and spatial analysis. They offer a free tier with generous usage limits, making it suitable for small to medium-scale projects.  
+   https://dhruvnakum.xyz/flutter-mapbox-integration-complete-guide-with-example   
+   https://docs.mapbox.com/android/search/guides/search-by-text/#:~:text=The%20Place%20Autocomplete%20returns%20place,a%20few%20lines%20of%20code.
+
 
 4. **Google Maps Platform (limited free tier)**: Google Maps Platform offers various APIs for mapping, geocoding, routing, and other location-based services. While it's not entirely free for all usage levels, Google provides a limited free tier with usage credits, allowing developers to get started without immediate costs.
 

@@ -13,8 +13,6 @@ public class CookieUtil {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
         cookie.setDomain(domain);
-
-
         httpServletResponse.addCookie(cookie);
     }
 

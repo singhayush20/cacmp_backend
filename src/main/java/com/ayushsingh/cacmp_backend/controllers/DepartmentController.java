@@ -2,9 +2,10 @@ package com.ayushsingh.cacmp_backend.controllers;
 
 import com.ayushsingh.cacmp_backend.config.security.util.JwtUtil;
 import com.ayushsingh.cacmp_backend.constants.AppConstants;
-import com.ayushsingh.cacmp_backend.models.dtos.RefreshTokenDto;
+import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginRequestDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
+import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import com.ayushsingh.cacmp_backend.services.DepartmentService;
@@ -19,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/department")
@@ -38,7 +41,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> login(HttpServletResponse httpServletResponse, @RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(HttpServletResponse httpServletResponse) {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String token=departmentService.getDepartmentToken(username);
@@ -48,6 +51,7 @@ public class DepartmentController {
             LoginResponseDto loginResponseDto = new LoginResponseDto();
             loginResponseDto.setAccessToken(accessToken);
             loginResponseDto.setToken(token);
+            loginResponseDto.setUsername(username);
             loginResponseDto.setRefreshToken(refreshToken.getRefreshToken());
             return new ResponseEntity<>(new ApiResponse<>(loginResponseDto), HttpStatus.OK);
 
@@ -73,4 +77,23 @@ public class DepartmentController {
             return new ResponseEntity<>(new ApiResponse<>("The refresh token is expired! Cannot generate a new token! Please re-login"),HttpStatus.OK);
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<DepartmentDetailsDto>>> getAllDepartments(){
+        List<DepartmentDetailsDto> departments=departmentService.listAllDepartments();
+        return new ResponseEntity<>(new ApiResponse<>(departments),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{departmentToken}")
+    public ResponseEntity<ApiResponse<String>> deleteDepartment(@PathVariable String departmentToken){
+        departmentService.deleteDepartment(departmentToken);
+        return new ResponseEntity<>(new ApiResponse<>("Department deleted successfully"),HttpStatus.OK);
+    }
+
+    @GetMapping("/details/{departmentToken}")
+    public ResponseEntity<ApiResponse<DepartmentDetailsDto>> getDepartment(@PathVariable String departmentToken){
+        DepartmentDetailsDto department=departmentService.getDepartment(departmentToken);
+        return new ResponseEntity<>(new ApiResponse<>(department),HttpStatus.OK);
+    }
 }
+

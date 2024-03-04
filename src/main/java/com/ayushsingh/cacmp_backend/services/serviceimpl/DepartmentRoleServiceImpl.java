@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -25,5 +26,10 @@ public class DepartmentRoleServiceImpl implements DepartmentRoleService {
         else{
             throw new ApiException("Department role with name: "+roleName+" does not exist");
         }
+    }
+
+    @Override
+    public Set<String> listDepartmentRoles() {
+        return departmentRoleRepository.listDepartmentRoles();
     }
 }

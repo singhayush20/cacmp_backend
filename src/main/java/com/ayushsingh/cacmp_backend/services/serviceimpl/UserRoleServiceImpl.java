@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,5 +26,10 @@ public class UserRoleServiceImpl implements UserRoleService {
         else{
             throw new ApiException("User role with name: "+roleName+" does not exist");
         }
+    }
+
+    @Override
+    public List<String> listUserRoles() {
+        return userRoleRepository.listUserRoles();
     }
 }

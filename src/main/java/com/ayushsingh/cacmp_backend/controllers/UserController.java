@@ -2,9 +2,10 @@ package com.ayushsingh.cacmp_backend.controllers;
 
 import com.ayushsingh.cacmp_backend.config.security.util.JwtUtil;
 import com.ayushsingh.cacmp_backend.constants.AppConstants;
-import com.ayushsingh.cacmp_backend.models.dtos.RefreshTokenDto;
+import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginRequestDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
+import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserRegisterDto;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import com.ayushsingh.cacmp_backend.services.RefreshTokenService;
@@ -19,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -39,7 +42,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> login(HttpServletResponse httpServletResponse, @RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(HttpServletResponse httpServletResponse) {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String token=userService.getUserToken(username);
@@ -49,6 +52,7 @@ public class UserController {
             LoginResponseDto loginResponseDto = new LoginResponseDto();
             loginResponseDto.setAccessToken(accessToken);
             loginResponseDto.setToken(token);
+            loginResponseDto.setUsername(username);
             loginResponseDto.setRefreshToken(refreshToken.getRefreshToken());
             return new ResponseEntity<>(new ApiResponse<>(loginResponseDto), HttpStatus.OK);
 
@@ -74,4 +78,16 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse<>("The refresh token is expired! Cannot generate a new token! Please re-login"),HttpStatus.OK);
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<UserDetailsDto>>> getAllUsers(){
+        return new ResponseEntity<>(new ApiResponse<>(userService.listAllUsers()),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{userToken}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable String userToken){
+        userService.deleteUser(userToken);
+        return new ResponseEntity<>(new ApiResponse<>("User deleted successfully"),HttpStatus.OK);
+    }
+
 }

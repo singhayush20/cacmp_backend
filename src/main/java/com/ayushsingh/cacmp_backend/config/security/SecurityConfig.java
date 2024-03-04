@@ -21,22 +21,14 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
+import static com.ayushsingh.cacmp_backend.constants.AppConstants.PUBLIC_URLS;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_URLS = {
-            "/api/v1/consumer/login",
-            "/api/v1/consumer/register",
-            "/api/v1/consumer/refresh-token",
-            "/api/v1/department/login",
-            "/api/v1/department/register",
-            "/api/v1/department/refresh-token",
-            "/api/v1/user/login",
-            "/api/v1/user/register",
-            "/api/v1/user/refresh-token"
-    };
+
 
 
     private final AuthenticationEntryPoint authEntryPoint;
@@ -64,13 +56,14 @@ public class SecurityConfig {
 
         http.cors().configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(List.of("http://localhost:8085"));
+            configuration.setAllowedOrigins(List.of("http://localhost:5173"));
             configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
             configuration.setAllowCredentials(true);
             configuration.addExposedHeader("Message");
             configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
             return configuration;
         }).and().csrf().disable().authorizeHttpRequests().requestMatchers(PUBLIC_URLS).permitAll().anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(authEntryPoint).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 
 
         http.addFilterBefore(customAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class);

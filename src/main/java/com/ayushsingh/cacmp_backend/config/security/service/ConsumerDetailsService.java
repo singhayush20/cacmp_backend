@@ -22,11 +22,6 @@ public class ConsumerDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Consumer> user = consumerRepository.findByEmail(username);
 
-        if(user.isEmpty()){
-            throw new ApiException("User not found with username: "+username);
-        }
-        else{
-            return new SecurityConsumer(user.get());
-        }
+        return user.map(SecurityConsumer::new).orElse(null);
     }
 }

@@ -8,4 +8,6 @@ public interface DepartmentRoleService {
 
     DepartmentRole getDepartmentRoleByRoleName(String roleName);
 
+    Set<String> listDepartmentRoles();
+
 }

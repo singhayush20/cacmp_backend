@@ -21,11 +21,6 @@ private final DepartmentRepository departmentRepository;
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Department> department = departmentRepository.findByUsername(username);
 
-        if(department.isEmpty()){
-            throw new ApiException("Department not found with username: "+username);
-        }
-        else{
-            return new SecurityDepartment(department.get());
-        }
+    return department.map(SecurityDepartment::new).orElse(null);
     }
 }

@@ -17,36 +17,42 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiResponse<String>> handleApiException(ApiException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ApiResponse<String>> handleExpiredJwtException(ExpiredJwtException e){
-        ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+        ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ACCESS_TOKEN_EXPIRED,AppConstants.ERROR_RESPONSE,e.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<ApiResponse<String>> handleRefreshTokenExpiredException(RefreshTokenExpiredException e){
+        ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.REFRESH_TOKEN_EXPIRED,AppConstants.ERROR_RESPONSE,e.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<ApiResponse<String>> handleMalformedJwtException(MalformedJwtException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ApiResponse<String>> handleSignatureException(SignatureException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<ApiResponse<String>> handleUnsupportedJwtException(UnsupportedJwtException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }

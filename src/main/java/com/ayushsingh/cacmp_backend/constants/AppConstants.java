@@ -9,6 +9,9 @@ public class AppConstants {
     public static final String ERROR_RESPONSE = "Error";
     public static final String FAILURE_MESSAGE = "Failure";
 
+    public static final Integer ACCESS_TOKEN_EXPIRED=2003;
+    public static final Integer REFRESH_TOKEN_EXPIRED=2004;
+
     public static final String SECRET_KEY = "t3pCSx2wx1ExbQ5z43XXB8my/KR24aon4EH/niU9iZi1I3S69rk1QhlMFFsTrZIY";
     public static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60;  //10 hour
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 5; //5 days
@@ -23,5 +26,17 @@ public class AppConstants {
     public static final String AUTH_HEADER = "Authorization";
     public static final String SIGN_IN_URI_ENDING = "/login";
     public static final String REALM_HEADER = "WWW-Authenticate";
+
+    public static final String[] PUBLIC_URLS = {
+            "/api/v1/consumer/login",
+            "/api/v1/consumer/register",
+            "/api/v1/consumer/refresh-token",
+            "/api/v1/department/login",
+            "/api/v1/department/register",
+            "/api/v1/department/refresh-token",
+            "/api/v1/user/login",
+            "/api/v1/user/register",
+            "/api/v1/user/refresh-token"
+    };
 
 }
