@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.repository.entities;
 
+import com.ayushsingh.cacmp_backend.models.projections.category.CategoryDetailsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ayushsingh.cacmp_backend.models.entities.Category;
@@ -22,4 +23,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long>{
 
     @Query("SELECT c FROM Category c WHERE c.department.deptToken = ?1")
     List<Category> findAllByDepartmentToken(String departmentToken);
+
+    @Query("SELECT c.categoryName as categoryName, c.categoryDescription as categoryDescription, c.department.deptToken as departmentToken, c.department.departmentName FROM Category c WHERE c.categoryToken = ?1")
+    CategoryDetailsProjection findCategoryDetailsByCategoryToken(String categoryToken);
 }

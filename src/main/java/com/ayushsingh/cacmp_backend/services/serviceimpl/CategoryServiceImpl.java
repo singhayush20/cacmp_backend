@@ -4,6 +4,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.categoryDtos.CategoryCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.categoryDtos.CategoryDetailsDto;
 import com.ayushsingh.cacmp_backend.models.entities.Category;
 import com.ayushsingh.cacmp_backend.models.entities.Department;
+import com.ayushsingh.cacmp_backend.models.projections.category.CategoryDetailsProjection;
 import com.ayushsingh.cacmp_backend.repository.entities.CategoryRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.services.CategoryService;
@@ -84,6 +85,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDetailsDto> getAllCategories() {
         List<Category> categories=categoryRepository.findAll();
         return categories.stream().map(category -> this.modelMapper.map(category,CategoryDetailsDto.class)).toList();
+    }
+
+    @Override
+    public CategoryDetailsProjection getCategory(String categoryToken) {
+        return categoryRepository.findCategoryDetailsByCategoryToken(categoryToken);
     }
 
 }

@@ -1,3 +1,13 @@
+# Running this application
+
+This application is using cloudinary as a storage service. Since, the credentials must not be pushed to repository, they are set using environment variables.  
+The credentials are picked up by the ```CloudinaryConfigurationProperties``` from the environment variables in production and, from ```secrets.properties``` in development environment.  
+Provide following cloudinary properties-  
+* cloudinary.api-key
+* cloudinary.api-secret
+* cloudinary.cloud-name
+
+
 # Basic idea behind the project
 
 Whenever a user has a complaint regarding any anemity, they can log a query with photo, text and location. Now, each city administration can have a dashboard to view the complaints which appear every day and manage them using the dashboard.

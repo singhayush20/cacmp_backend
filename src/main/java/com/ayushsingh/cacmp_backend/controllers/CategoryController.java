@@ -2,6 +2,7 @@ package com.ayushsingh.cacmp_backend.controllers;
 
 import com.ayushsingh.cacmp_backend.models.dtos.categoryDtos.CategoryCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.categoryDtos.CategoryDetailsDto;
+import com.ayushsingh.cacmp_backend.models.projections.category.CategoryDetailsProjection;
 import com.ayushsingh.cacmp_backend.services.CategoryService;
 import com.ayushsingh.cacmp_backend.util.responseUtil.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class CategoryController {
         return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.CREATED);
     }
 
-    @PutMapping("")
-    public ResponseEntity<ApiResponse<String>> updateCategory(@RequestBody CategoryCreateDto categoryCreateDto, @RequestParam(name = "categoryToken") String token){
+    @PutMapping("/{categoryToken}")
+    public ResponseEntity<ApiResponse<String>> updateCategory(@RequestBody CategoryCreateDto categoryCreateDto, @PathVariable(name = "categoryToken") String token){
         String categoryToken=categoryService.updateCategory(categoryCreateDto,token);
         return new ResponseEntity<>(new ApiResponse<>(categoryToken),HttpStatus.OK);
     }
@@ -45,6 +46,13 @@ public class CategoryController {
     @GetMapping("")
     public ResponseEntity<ApiResponse<List<CategoryDetailsDto>>> getAllCategories(){
         List<CategoryDetailsDto> category=categoryService.getAllCategories();
+        return new ResponseEntity<>(new ApiResponse<>(category),HttpStatus.OK);
+    }
+
+    @GetMapping("/{categoryToken}")
+    public ResponseEntity<ApiResponse<CategoryDetailsProjection>> getCategory(@PathVariable(name = "categoryToken") String token){
+
+        CategoryDetailsProjection category=categoryService.getCategory(token);
         return new ResponseEntity<>(new ApiResponse<>(category),HttpStatus.OK);
     }
 }

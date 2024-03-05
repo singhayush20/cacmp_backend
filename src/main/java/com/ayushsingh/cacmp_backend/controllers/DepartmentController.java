@@ -108,5 +108,7 @@ public class DepartmentController {
         List<DepartmentNameProjection> departments=departmentService.getDepartmentNames();
         return new ResponseEntity<>(new ApiResponse<>(departments),HttpStatus.OK);
     }
+
+
 }
 
