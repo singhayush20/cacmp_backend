@@ -3,7 +3,6 @@ package com.ayushsingh.cacmp_backend.controllers;
 import com.ayushsingh.cacmp_backend.config.security.util.JwtUtil;
 import com.ayushsingh.cacmp_backend.constants.AppConstants;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
-import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginRequestDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserRegisterDto;
@@ -84,10 +83,23 @@ public class UserController {
         return new ResponseEntity<>(new ApiResponse<>(userService.listAllUsers()),HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{userToken}")
+    @DeleteMapping("/{userToken}")
     public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable String userToken){
         userService.deleteUser(userToken);
         return new ResponseEntity<>(new ApiResponse<>("User deleted successfully"),HttpStatus.OK);
+    }
+
+    @GetMapping("/{userToken}")
+    public ResponseEntity<ApiResponse<UserDetailsDto>> getUser(@PathVariable String userToken){
+        return new ResponseEntity<>(new ApiResponse<>(userService.getUser(userToken)),HttpStatus.OK);
+    }
+
+
+    @PutMapping("")
+    public ResponseEntity<ApiResponse<String>> updateUser(@RequestBody UserDetailsDto userDetailsDto){
+        String token=userService.updateUser(userDetailsDto);
+        return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
+
     }
 
 }

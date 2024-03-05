@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("DELETE FROM User u WHERE u.userToken = ?1")
     @Modifying
     void deleteByUserToken(String userToken);
+
+    @Query("SELECT u FROM User u WHERE u.userToken = ?1")
+    Optional<User> findByUserToken(String userToken);
 }

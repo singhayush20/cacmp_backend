@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -86,5 +87,47 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteByUserToken(userToken);
     }
 
+    @Override
+    public UserDetailsDto getUser(String userToken) {
+        Optional<User> userOptional = userRepository.findByUserToken(userToken);
+        if(userOptional.isEmpty()){
+            throw new ApiException("User with user token: "+userToken+" does not exist");
+        }
+        else{
+            UserDetailsDto userDetailsDto=new UserDetailsDto();
+            userDetailsDto.setUserToken(userOptional.get().getUserToken());
+            userDetailsDto.setUsername(userOptional.get().getUsername());
+            userDetailsDto.setName(userOptional.get().getName());
+            Set<String> roles=new HashSet<>();
+            Set<UserRole> userRoles=userOptional.get().getRoles();
+            for(UserRole role: userRoles){
+                roles.add(role.getRoleName());
+            }
+            userDetailsDto.setRoles(roles);
+            return userDetailsDto;
+        }
+    }
 
+    @Override
+    public String updateUser(UserDetailsDto userDetailsDto) {
+        String userToken=userDetailsDto.getUserToken();
+        Optional<User> userOptional = userRepository.findByUserToken(userToken);
+        if(userOptional.isEmpty()){
+            throw new ApiException("User with user token: "+userToken+" does not exist");
+        }
+        else{
+            User user=userOptional.get();
+            user.setName(userDetailsDto.getName());
+            user.setUsername(userDetailsDto.getUsername());
+            Set<UserRole> roles=new HashSet<>();
+            Set<String> userRoles=userDetailsDto.getRoles();
+            for(String role: userRoles){
+                UserRole userRole=userRoleService.getUserRoleByRoleName(role);
+                roles.add(userRole);
+            }
+            user.setRoles(roles);
+            user=userRepository.save(user);
+            return user.getUserToken();
+        }
+    }
 }

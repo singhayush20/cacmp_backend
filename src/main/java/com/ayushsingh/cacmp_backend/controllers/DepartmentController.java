@@ -7,6 +7,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginRequestDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
+import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import com.ayushsingh.cacmp_backend.services.DepartmentService;
 import com.ayushsingh.cacmp_backend.services.RefreshTokenService;
@@ -90,10 +91,22 @@ public class DepartmentController {
         return new ResponseEntity<>(new ApiResponse<>("Department deleted successfully"),HttpStatus.OK);
     }
 
-    @GetMapping("/details/{departmentToken}")
+    @GetMapping("/{departmentToken}")
     public ResponseEntity<ApiResponse<DepartmentDetailsDto>> getDepartment(@PathVariable String departmentToken){
         DepartmentDetailsDto department=departmentService.getDepartment(departmentToken);
         return new ResponseEntity<>(new ApiResponse<>(department),HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<ApiResponse<String>> updateDepartment(@RequestBody DepartmentDetailsDto departmentDetailsDto){
+        String token=departmentService.updateDepartment(departmentDetailsDto);
+        return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<ApiResponse<List<DepartmentNameProjection>>> getDepartmentNames(){
+        List<DepartmentNameProjection> departments=departmentService.getDepartmentNames();
+        return new ResponseEntity<>(new ApiResponse<>(departments),HttpStatus.OK);
     }
 }
 

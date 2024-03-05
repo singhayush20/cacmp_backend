@@ -17,4 +17,8 @@ public interface UserService {
     List<UserDetailsDto> listAllUsers();
 
     void deleteUser(String userToken);
+
+    UserDetailsDto getUser(String userToken);
+
+    String updateUser(UserDetailsDto userDetailsDto);
 }

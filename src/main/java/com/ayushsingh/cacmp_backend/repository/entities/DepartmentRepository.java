@@ -1,12 +1,14 @@
 package com.ayushsingh.cacmp_backend.repository.entities;
 
 import com.ayushsingh.cacmp_backend.models.entities.User;
+import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ayushsingh.cacmp_backend.models.entities.Department;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DepartmentRepository extends JpaRepository<Department,Long> {
@@ -28,4 +30,7 @@ public interface DepartmentRepository extends JpaRepository<Department,Long> {
 
     @Query("SELECT d FROM Department d WHERE d.deptToken = ?1")
     Optional<Department> findByDeptToken(String departmentToken);
+
+    @Query("SELECT d.departmentName as departmentName, d.deptToken as departmentToken FROM Department d")
+    List<DepartmentNameProjection> findALlDepartmentNames();
 }

@@ -3,6 +3,7 @@ package com.ayushsingh.cacmp_backend.services.serviceimpl;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
 import com.ayushsingh.cacmp_backend.models.entities.Department;
+import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 import com.ayushsingh.cacmp_backend.models.roles.DepartmentRole;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.services.DepartmentRoleService;
@@ -87,6 +88,27 @@ public class DepartmentServiceImpl implements DepartmentService {
         else{
             return this.modelMapper.map(departmentOptional.get(),DepartmentDetailsDto.class);
         }
+    }
+
+    @Override
+    public String updateDepartment(DepartmentDetailsDto departmentDetailsDto) {
+        String token=departmentDetailsDto.getDeptToken();
+        Optional<Department> departmentOptional = departmentRepository.findByDeptToken(token);
+        if(departmentOptional.isEmpty()){
+            throw new ApiException("Department with department token: "+token+" does not exist");
+        }
+        else{
+            Department department=departmentOptional.get();
+            department.setDepartmentName(departmentDetailsDto.getDepartmentName());
+            department.setDepartmentObjective(departmentDetailsDto.getDepartmentObjective());
+            department=departmentRepository.save(department);
+            return department.getDeptToken();
+        }
+    }
+
+    @Override
+    public List<DepartmentNameProjection> getDepartmentNames() {
+        return departmentRepository.findALlDepartmentNames();
     }
 
 
