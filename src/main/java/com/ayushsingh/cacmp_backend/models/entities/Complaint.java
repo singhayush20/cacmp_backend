@@ -67,7 +67,7 @@ public class Complaint {
     private Set<ComplaintImage> complaintImages = new HashSet<ComplaintImage>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id")
+    @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id",nullable = false)
     private Consumer consumer;
 
     @CreatedDate

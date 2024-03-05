@@ -16,4 +16,8 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
     @Query("select c.consumerToken from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.email = ?1")
     String findTokenByEmail(String email);
+
+
+    @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.consumerToken = ?1")
+    Optional<Consumer> findByConsumerToken(String consumerToken);
 }

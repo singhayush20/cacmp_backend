@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
-public interface ImageUploadService {
+public interface ImageService {
 
-    public Map upload(MultipartFile file);
+     Map<String,Object> upload(MultipartFile file);
 }

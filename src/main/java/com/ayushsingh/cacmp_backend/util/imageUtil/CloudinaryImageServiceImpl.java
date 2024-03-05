@@ -13,17 +13,17 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CloudinaryImageServiceImpl implements ImageUploadService {
+public class CloudinaryImageServiceImpl implements ImageService {
 
     private final Cloudinary cloudinary;
 
 
     @Override
-    public Map upload(MultipartFile file) {
+    public Map<String,Object> upload(MultipartFile file) {
 
         try {
             log.info("Uploading file to cloudinary...");
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of());
+            Map<String,Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of());
             log.info("Upload result: {}", uploadResult);
             return uploadResult;
         }

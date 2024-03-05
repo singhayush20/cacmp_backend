@@ -36,6 +36,15 @@ public class ComplaintImage {
     @Column(name = "image_url", nullable = false, unique = true)
     private String imageUrl;
 
+    @Column(name="signature",nullable = false,unique = true)
+    private String signature;
+
+    @Column(name="asset_id",nullable = false,unique = true)
+    private String assetId;
+
+    @Column(name="public_id",nullable = false,unique = true)
+    private String publicId;
+
     @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="complaint_id",referencedColumnName = "complaint_id")
     private Complaint complaint;
