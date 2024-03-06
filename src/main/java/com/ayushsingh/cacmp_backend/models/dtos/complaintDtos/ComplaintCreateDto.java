@@ -21,4 +21,10 @@ public class ComplaintCreateDto {
 
     private String consumerToken;
 
+    private Long pincode;
+
+    private String wardNo;
+
+    private String address;
+
 }

@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableConfigurationProperties(CloudinaryConfigurationProperties.class)
 public class CacmpBackendApplication implements CommandLineRunner {
 
-	private final CloudinaryConfigurationProperties cloudinaryConfigurationProperties;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CacmpBackendApplication.class, args);

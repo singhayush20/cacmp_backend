@@ -22,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -67,8 +68,12 @@ public class Complaint {
     private Set<ComplaintImage> complaintImages = new HashSet<ComplaintImage>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id",nullable = false)
+    @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id", nullable = false)
     private Consumer consumer;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "complaint_location_id", referencedColumnName = "complaint_location_id")
+    private ComplaintLocation address;
 
     @CreatedDate
     @CreationTimestamp
@@ -87,13 +92,15 @@ public class Complaint {
         }
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Complaint complaint = (Complaint) o;
-        return Objects.equals(complaintId, complaint.complaintId) && Objects.equals(complaintSubject, complaint.complaintSubject);
+        return Objects.equals(complaintId, complaint.complaintId)
+                && Objects.equals(complaintSubject, complaint.complaintSubject);
     }
 
     @Override
