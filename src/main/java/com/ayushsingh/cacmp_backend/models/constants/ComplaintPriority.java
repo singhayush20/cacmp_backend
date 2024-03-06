@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum ComplaintPriority {
 
-    LOW("low"), MEDIUM("medium"), HIGH("high");
+    LOW("LOW"), MEDIUM("MEDIUM"), HIGH("HIGH");
 
     private String value;
 

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum ComplaintStatus {
 
-    OPEN("Open"), REVIEWED("reviewed"), CLOSED("Closed");
+    OPEN("OPEN"), REVIEWED("REVIEWED"), CLOSED("CLOSED");
 
     private String value;
 

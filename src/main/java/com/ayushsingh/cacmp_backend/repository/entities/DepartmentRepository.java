@@ -1,6 +1,5 @@
 package com.ayushsingh.cacmp_backend.repository.entities;
 
-import com.ayushsingh.cacmp_backend.models.entities.User;
 import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 

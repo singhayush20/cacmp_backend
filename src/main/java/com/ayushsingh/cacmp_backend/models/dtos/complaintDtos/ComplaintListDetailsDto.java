@@ -1,5 +1,7 @@
 package com.ayushsingh.cacmp_backend.models.dtos.complaintDtos;
 
+import com.ayushsingh.cacmp_backend.models.constants.ComplaintPriority;
+import com.ayushsingh.cacmp_backend.models.constants.ComplaintStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,24 +11,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ComplaintCreateDto {
+public class ComplaintListDetailsDto {
 
+    private String complaintToken;
     private String complaintSubject;
-
     private String complaintDescription;
-
-    private String complaintPriority;
-
-    private String categoryToken;
-
-    private String consumerToken;
-
-    private Long pincode;
-
-    private String wardNo;
-
-    private String address;
-
-    private Long contactNo;
-
+    private ComplaintStatus complaintStatus;
+    private ComplaintPriority complaintPriority;
 }

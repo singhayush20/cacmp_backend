@@ -73,7 +73,7 @@ public class Complaint {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "complaint_location_id", referencedColumnName = "complaint_location_id")
-    private ComplaintLocation address;
+    private ComplaintLocation complaintLocation;
 
     @CreatedDate
     @CreationTimestamp
