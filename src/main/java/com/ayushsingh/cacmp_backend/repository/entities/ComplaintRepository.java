@@ -4,9 +4,6 @@ import com.ayushsingh.cacmp_backend.models.constants.ComplaintPriority;
 import com.ayushsingh.cacmp_backend.models.constants.ComplaintStatus;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintListDetailsProjection;
-import com.ayushsingh.cacmp_backend.repository.specifications.complaint.ComplaintSpecification;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ayushsingh.cacmp_backend.models.entities.Complaint;
@@ -65,16 +62,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaS
             "WHERE c.complaintToken = :complaintToken")
     ComplaintDetailsProjection getComplaintDetails(@Param("complaintToken") String complaintToken);
 
-    @Query("""
-            SELECT c.complaintToken as complaintToken,
-            c.complaintSubject as complaintSubject,
-            c.complaintDescription as complaintDescription,
-            c.complaintStatus as complaintStatus,
-            c.complaintPriority as complaintPriority
-            FROM Complaint c
-            ORDER BY c.createdAt DESC
-            """)
-    List<ComplaintListDetailsProjection> getAllComplaints();
+
 
 
     @Query("""
@@ -101,4 +89,17 @@ public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaS
 
 
 
+
+    @Query("""
+            SELECT c.complaintToken as complaintToken,
+            c.complaintSubject as complaintSubject,
+            c.complaintDescription as complaintDescription,
+            c.complaintStatus as complaintStatus,
+            c.complaintPriority as complaintPriority,
+            c.category.categoryName as complaintCategory
+            FROM Complaint c
+            WHERE c.consumer.consumerToken =?1
+            ORDER BY c.createdAt DESC
+            """)
+    List<ComplaintListDetailsProjection> findAllByConsumer(String token);
 }

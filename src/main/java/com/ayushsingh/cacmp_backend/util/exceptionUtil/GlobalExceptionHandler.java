@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -53,6 +55,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(InsufficientRolesException.class)
+    public ResponseEntity<ApiResponse<String>> handleInsufficientRolesException(InsufficientRolesException e){
+        ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ACCESS_DENIED_CODE,AppConstants.ACCESS_DENIED_MESSAGE,e.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }

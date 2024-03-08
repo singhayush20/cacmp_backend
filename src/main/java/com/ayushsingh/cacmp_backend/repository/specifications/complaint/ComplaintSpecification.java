@@ -14,7 +14,6 @@ public class ComplaintSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Add filter predicates based on the filter criteria
             if (filter.getStatus() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("complaintStatus"), filter.getStatus()));
             }
@@ -26,6 +25,9 @@ public class ComplaintSpecification {
             }
             if (filter.getWardNo() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("complaintLocation").get("wardNo"), filter.getWardNo()));
+            }
+            if(filter.getCategoryToken() != null){
+                predicates.add(criteriaBuilder.equal(root.get("category").get("categoryToken"), filter.getCategoryToken()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

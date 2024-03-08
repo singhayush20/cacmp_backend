@@ -12,4 +12,6 @@ public interface ComplaintListDetailsProjection {
 
     String getComplaintPriority();
 
+    String getComplaintCategory();
+
 }

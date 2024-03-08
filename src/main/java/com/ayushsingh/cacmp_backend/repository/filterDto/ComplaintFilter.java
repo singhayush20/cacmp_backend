@@ -12,5 +12,6 @@ public class ComplaintFilter {
     private ComplaintPriority priority;
     private Long pincode;
     private String wardNo;
+    private String categoryToken;
 }
 

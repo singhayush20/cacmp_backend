@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +27,7 @@ import static com.ayushsingh.cacmp_backend.constants.AppConstants.PUBLIC_URLS;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -35,6 +38,7 @@ public class SecurityConfig {
     private final ConsumerAuthProvider consumerAuthProvider;
     private final DepartmentAuthProvider departmentAuthProvider;
     private final UserAuthProvider userAuthProvider;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
@@ -62,7 +66,22 @@ public class SecurityConfig {
             configuration.addExposedHeader("Message");
             configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
             return configuration;
-        }).and().csrf().disable().authorizeHttpRequests().requestMatchers(PUBLIC_URLS).permitAll().anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(authEntryPoint).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        })
+                .and()
+                .csrf()
+                .disable()
+                .authorizeHttpRequests()
+                .requestMatchers(PUBLIC_URLS)
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(authEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 
 

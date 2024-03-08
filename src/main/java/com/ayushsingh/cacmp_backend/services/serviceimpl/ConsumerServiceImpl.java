@@ -25,7 +25,6 @@ import java.util.Set;
 public class ConsumerServiceImpl implements ConsumerService {
 
     private final ConsumerRepository consumerRepository;
-    private final ConsumerAddressRepository consumerAddressRepository;
     private final ConsumerRoleService consumerRoleService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -58,8 +57,10 @@ public class ConsumerServiceImpl implements ConsumerService {
             consumer.setGender(consumerRegisterDto.getGender());
             consumer.setName(consumerRegisterDto.getName());
             consumer.setIsEmailVerified(false);
-            ConsumerAddress consumerAddress=this.modelMapper.map(consumerRegisterDto.getAddress(),ConsumerAddress.class);
-            consumer.setAddress(consumerAddress);
+            if(consumerRegisterDto.getAddress()!=null) {
+                ConsumerAddress consumerAddress = this.modelMapper.map(consumerRegisterDto.getAddress(), ConsumerAddress.class);
+                consumer.setAddress(consumerAddress);
+            }
             consumer=consumerRepository.save(consumer);
             return consumer.getConsumerToken();
         }

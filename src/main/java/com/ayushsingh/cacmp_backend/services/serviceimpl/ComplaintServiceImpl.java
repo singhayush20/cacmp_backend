@@ -112,10 +112,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintImageRepository.getComplaintImages(token);
     }
 
-    @Override
-    public List<ComplaintListDetailsProjection> getAllComplaints() {
-        return complaintRepository.getAllComplaints();
-    }
+
 
     @Override
     public List<ComplaintListDetailsProjection> getAllComplaintsByStatus(String status) {
@@ -159,4 +156,11 @@ public class ComplaintServiceImpl implements ComplaintService {
             return complaintListDetailsDto;
         }).toList();
     }
+
+    @Override
+    public List<ComplaintListDetailsProjection> getComplaintsForConsumer(String token) {
+        return this.complaintRepository.findAllByConsumer(token);
+    }
+
+
 }

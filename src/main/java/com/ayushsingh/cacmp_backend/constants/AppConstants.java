@@ -4,10 +4,10 @@ public class AppConstants {
 
     public static final Integer SUCCESS_CODE = 2000;
     public static final Integer ERROR_CODE = 2002;
-    public static final Integer FAILURE_CODE = 2001;
+    public static final Integer ACCESS_DENIED_CODE = 2001;
     public static final String SUCCESS_MESSAGE = "Success";
     public static final String ERROR_RESPONSE = "Error";
-    public static final String FAILURE_MESSAGE = "Failure";
+    public static final String ACCESS_DENIED_MESSAGE = "Failure";
 
     public static final Integer ACCESS_TOKEN_EXPIRED=2003;
     public static final Integer REFRESH_TOKEN_EXPIRED=2004;
@@ -32,10 +32,8 @@ public class AppConstants {
             "/api/v1/consumer/register",
             "/api/v1/consumer/refresh-token",
             "/api/v1/department/login",
-            "/api/v1/department/register",
             "/api/v1/department/refresh-token",
             "/api/v1/user/login",
-            "/api/v1/user/register",
             "/api/v1/user/refresh-token"
     };
 

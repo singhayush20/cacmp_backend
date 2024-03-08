@@ -48,4 +48,11 @@ public class UserRole {
     public int hashCode() {
         return Objects.hash(roleName);
     }
+
+    @Override
+    public String toString() {
+        return "UserRole{" +
+                "roleName='" + roleName + '\'' +
+                '}';
+    }
 }

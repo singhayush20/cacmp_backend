@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +36,12 @@ public class DepartmentController {
     @Value("${jwt.accessTokenCookieName}")
     private String accessTokenCookieName;
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody DepartmentRegisterDto departmentRegisterDto){
         String token=departmentService.registerDepartment(departmentRegisterDto);
         return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.CREATED);
     }
-
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponseDto>> login(HttpServletResponse httpServletResponse) {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
@@ -60,6 +61,7 @@ public class DepartmentController {
         throw new ApiException("User authentication failed!");
     }
 
+    @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @GetMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response){
         CookieUtil.clear(response,accessTokenCookieName);
@@ -78,31 +80,35 @@ public class DepartmentController {
             return new ResponseEntity<>(new ApiResponse<>("The refresh token is expired! Cannot generate a new token! Please re-login"),HttpStatus.OK);
         }
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<DepartmentDetailsDto>>> getAllDepartments(){
         List<DepartmentDetailsDto> departments=departmentService.listAllDepartments();
         return new ResponseEntity<>(new ApiResponse<>(departments),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @DeleteMapping("/{departmentToken}")
     public ResponseEntity<ApiResponse<String>> deleteDepartment(@PathVariable String departmentToken){
         departmentService.deleteDepartment(departmentToken);
         return new ResponseEntity<>(new ApiResponse<>("Department deleted successfully"),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN', 'ROLE_DEPARTMENT')")
     @GetMapping("/{departmentToken}")
     public ResponseEntity<ApiResponse<DepartmentDetailsDto>> getDepartment(@PathVariable String departmentToken){
         DepartmentDetailsDto department=departmentService.getDepartment(departmentToken);
         return new ResponseEntity<>(new ApiResponse<>(department),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @PutMapping("")
     public ResponseEntity<ApiResponse<String>> updateDepartment(@RequestBody DepartmentDetailsDto departmentDetailsDto){
         String token=departmentService.updateDepartment(departmentDetailsDto);
         return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN', 'ROLE_DEPARTMENT')")
     @GetMapping("/names")
     public ResponseEntity<ApiResponse<List<DepartmentNameProjection>>> getDepartmentNames(){
         List<DepartmentNameProjection> departments=departmentService.getDepartmentNames();

@@ -28,7 +28,6 @@ public interface ComplaintService {
 
     List<String> getComplaintImages(String token);
 
-    List<ComplaintListDetailsProjection> getAllComplaints();
 
     List<ComplaintListDetailsProjection> getAllComplaintsByStatus(String status);
 
@@ -37,4 +36,6 @@ public interface ComplaintService {
 
 
     List<ComplaintListDetailsDto> getFilteredComplaints(ComplaintFilter complaintFilter, Sort sort);
+
+    List<ComplaintListDetailsProjection> getComplaintsForConsumer(String token);
 }

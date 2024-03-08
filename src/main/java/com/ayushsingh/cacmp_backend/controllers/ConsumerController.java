@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class ConsumerController {
 
     @Value("${jwt.accessTokenCookieName}")
     private String accessTokenCookieName;
+
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody ConsumerRegisterDto consumerRegisterDto) {
@@ -55,6 +57,7 @@ public class ConsumerController {
             throw new ApiException("User authentication failed!");
     }
 
+    @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @GetMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response){
         CookieUtil.clear(response,accessTokenCookieName);

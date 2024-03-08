@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class UserController {
     @Value("${jwt.accessTokenCookieName}")
     private String accessTokenCookieName;
 
-
+    @PreAuthorize("hasRole('ROLE_ROOT_ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody UserRegisterDto userRegisterDto){
         String consumerToken=userService.registerUser(userRegisterDto);
@@ -59,12 +60,12 @@ public class UserController {
         throw new ApiException("User authentication failed!");
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @GetMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response){
         CookieUtil.clear(response,accessTokenCookieName);
         return new ResponseEntity<>(new ApiResponse<>("Logged out successfully"),HttpStatus.OK);
     }
-
     @PutMapping("/refresh-token")
     public ResponseEntity<ApiResponse<String>> refreshJwtToken(@RequestBody RefreshTokenDto refreshTokenDto, HttpServletResponse httpServletResponse) {
         Boolean isRefreshTokenValid=this.refreshTokenService.verifyRefreshToken(refreshTokenDto.getRefreshToken());
@@ -77,24 +78,27 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse<>("The refresh token is expired! Cannot generate a new token! Please re-login"),HttpStatus.OK);
         }
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<UserDetailsDto>>> getAllUsers(){
         return new ResponseEntity<>(new ApiResponse<>(userService.listAllUsers()),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ROOT_ADMIN')")
     @DeleteMapping("/{userToken}")
     public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable String userToken){
         userService.deleteUser(userToken);
         return new ResponseEntity<>(new ApiResponse<>("User deleted successfully"),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @GetMapping("/{userToken}")
     public ResponseEntity<ApiResponse<UserDetailsDto>> getUser(@PathVariable String userToken){
         return new ResponseEntity<>(new ApiResponse<>(userService.getUser(userToken)),HttpStatus.OK);
     }
 
 
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN')")
     @PutMapping("")
     public ResponseEntity<ApiResponse<String>> updateUser(@RequestBody UserDetailsDto userDetailsDto){
         String token=userService.updateUser(userDetailsDto);

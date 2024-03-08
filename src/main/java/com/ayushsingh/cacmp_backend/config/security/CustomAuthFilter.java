@@ -7,6 +7,8 @@ import com.ayushsingh.cacmp_backend.config.security.util.JwtUtil;
 import com.ayushsingh.cacmp_backend.constants.AppConstants;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginRequestDto;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
+import com.ayushsingh.cacmp_backend.util.exceptionUtil.InsufficientRolesException;
+import com.cloudinary.Api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -33,6 +35,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 
 import static com.ayushsingh.cacmp_backend.constants.AppConstants.AUTH_HEADER;
@@ -89,7 +92,6 @@ public class CustomAuthFilter extends OncePerRequestFilter {
             if (headerToken == null) {
                 headerToken = request.getHeader(AUTH_HEADER); //-if no token, obtain token from header
             }
-            System.out.println("Header token: " + headerToken);
             //-if still not found, return
             if (headerToken == null) {
                 System.out.println("Token is not present");
@@ -135,13 +137,10 @@ public class CustomAuthFilter extends OncePerRequestFilter {
                 } else {
                     throw new ApiException("Username not found in token");
                 }
-            } catch (ExpiredJwtException e) {
+            } catch (ExpiredJwtException | AccessDeniedException | UnsupportedJwtException | MalformedJwtException |
+                     SignatureException | IllegalArgumentException | ApiException | InsufficientRolesException e) {
                 SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.unauthenticated(userDetails, null));
                 exceptionResolver.resolveException(request, response, null, e);
-            } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException |
-                     ApiException e) {
-                SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.unauthenticated(userDetails, null));
-                exceptionResolver.resolveException(request, response, null, new ApiException(e.getMessage()));
             }
         }
     }
