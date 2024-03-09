@@ -46,7 +46,7 @@ public class ConsumerAddress {
     private String wardNo;
 
     @Column(name = "pincode", nullable = false, length = 7)
-    private Long pincode;
+    private Long pinCode;
 
     @Column(name = "city", nullable = false)
     private String city;
@@ -76,11 +76,11 @@ public class ConsumerAddress {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConsumerAddress that = (ConsumerAddress) o;
-        return Objects.equals(houseNo, that.houseNo) && Objects.equals(locality, that.locality) && Objects.equals(wardNo, that.wardNo) && Objects.equals(pincode, that.pincode) && Objects.equals(city, that.city) && Objects.equals(state, that.state);
+        return Objects.equals(houseNo, that.houseNo) && Objects.equals(locality, that.locality) && Objects.equals(wardNo, that.wardNo) && Objects.equals(pinCode, that.pinCode) && Objects.equals(city, that.city) && Objects.equals(state, that.state);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(houseNo, locality, wardNo, pincode, city, state);
+        return Objects.hash(houseNo, locality, wardNo, pinCode, city, state);
     }
 }

@@ -1,6 +1,5 @@
 package com.ayushsingh.cacmp_backend.models.dtos.consumerAddressDtos;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ public class ConsumerAddressCreateDto {
 
     private String wardNo;
 
-    private Long pincode;
+    private Long pinCode;
 
     private String city;
 

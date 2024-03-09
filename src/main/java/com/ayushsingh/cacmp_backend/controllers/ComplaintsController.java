@@ -72,7 +72,7 @@ public class ComplaintsController {
         return new ResponseEntity<>(new ApiResponse<>(complaints),HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_RESIDENT','ROLE_NON_RESIDENT)")
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<ComplaintListDetailsProjection>>> getAllComplaintsByCustomer(@RequestParam("token") String token){
         List<ComplaintListDetailsProjection> list=complaintService.getComplaintsForConsumer(token);
@@ -101,7 +101,7 @@ public class ComplaintsController {
         return new ResponseEntity<>(new ApiResponse<>(complaints), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
+    @PreAuthorize("hasAnyRole('ROLE_DEPARTMENT','ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @GetMapping("/details")
     public ResponseEntity<ApiResponse<ComplaintDetailsProjection>> getComplaintDetails(@RequestParam("token") String token){
         ComplaintDetailsProjection complaint=complaintService.getComplaintDetails(token);

@@ -57,7 +57,7 @@ public class ConsumerController {
             throw new ApiException("User authentication failed!");
     }
 
-    @PreAuthorize("hasRole('ROLE_CONSUMER')")
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT', 'ROLE_NON_RESIDENT')")
     @GetMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response){
         CookieUtil.clear(response,accessTokenCookieName);
