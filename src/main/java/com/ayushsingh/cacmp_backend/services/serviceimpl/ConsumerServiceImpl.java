@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
+import com.ayushsingh.cacmp_backend.config.email.EmailConfigurationProperties;
 import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerDetailsDto;
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
 import com.ayushsingh.cacmp_backend.models.entities.ConsumerAddress;
@@ -8,7 +9,11 @@ import com.ayushsingh.cacmp_backend.models.roles.ConsumerRole;
 import com.ayushsingh.cacmp_backend.repository.entities.ConsumerRepository;
 import com.ayushsingh.cacmp_backend.services.ConsumerRoleService;
 import com.ayushsingh.cacmp_backend.services.ConsumerService;
+import com.ayushsingh.cacmp_backend.util.emailUtil.AccountVerificationEmailContext;
+import com.ayushsingh.cacmp_backend.util.emailUtil.MailService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
+import com.ayushsingh.cacmp_backend.util.otpUtil.OtpService;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +33,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final ConsumerRoleService consumerRoleService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final MailService mailService;
+    private final OtpService otpService;
+    private final EmailConfigurationProperties emailConfigurationProperties;
 
     @Override
     public Boolean isConsumerPresent(String email) {
@@ -84,5 +92,30 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public ConsumerDetailsProjection getConsumer(String token) {
         return consumerRepository.getConsumerDetails(token);
+    }
+
+    @Override
+    public void sendVerificationEmail(String email) {
+        int otp=otpService.generateOTP(email);
+        AccountVerificationEmailContext emailContext = new AccountVerificationEmailContext(emailConfigurationProperties);
+        emailContext.init();
+        emailContext.setTo(email);
+        emailContext.setOTP(String.valueOf(otp));
+        try{
+            mailService.sendEmail(emailContext);
+        }
+        catch(MessagingException e){
+            log.error("Some error occurred while sending email: "+e.getMessage());
+        }
+    }
+
+    @Override
+    public void verifyEmailOTP(String email, int otp) {
+       int storedOTP=otpService.getOTP(email);
+       log.info("Stored otp: "+storedOTP+" received otp: "+otp);
+       if(storedOTP!=otp){
+           throw new ApiException("The otp is either incorrect or expired!");
+       }
+       otpService.clearOTP(email);
     }
 }

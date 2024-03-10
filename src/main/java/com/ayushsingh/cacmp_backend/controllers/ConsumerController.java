@@ -91,4 +91,16 @@ public class ConsumerController {
         ConsumerDetailsProjection consumerDetails=consumerService.getConsumer(token);
         return new ResponseEntity<>(new ApiResponse<>(consumerDetails),HttpStatus.OK);
     }
+
+    @GetMapping("/email-verification")
+    public ResponseEntity<ApiResponse<String>> sendVerificationEmail(@RequestParam("email") String email){
+        consumerService.sendVerificationEmail(email);
+        return new ResponseEntity<>(new ApiResponse<>("Email sent successfully"),HttpStatus.OK);
+    }
+
+    @GetMapping("/email-verification/verify")
+    public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestParam("email") String email,@RequestParam("otp") int otp){
+        consumerService.verifyEmailOTP(email,otp);
+        return new ResponseEntity<>(new ApiResponse<>("Email verified successfully"),HttpStatus.OK);
+    }
 }

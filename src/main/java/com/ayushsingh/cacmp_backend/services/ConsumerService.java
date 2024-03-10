@@ -14,4 +14,8 @@ public interface ConsumerService {
     String updateConsumer(ConsumerDetailsDto consumerDto, String userToken);
 
     ConsumerDetailsProjection getConsumer(String token);
+
+    void sendVerificationEmail(String email);
+
+    void verifyEmailOTP(String email, int otp);
 }

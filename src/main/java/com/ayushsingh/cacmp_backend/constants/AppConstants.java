@@ -34,7 +34,9 @@ public class AppConstants {
             "/api/v1/department/login",
             "/api/v1/department/refresh-token",
             "/api/v1/user/login",
-            "/api/v1/user/refresh-token"
+            "/api/v1/user/refresh-token",
+            "/api/v1/consumer/email-verification",
+            "/api/v1/consumer/email-verification/verify"
     };
 
 }

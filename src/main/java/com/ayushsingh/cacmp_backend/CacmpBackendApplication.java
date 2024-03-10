@@ -1,6 +1,7 @@
 package com.ayushsingh.cacmp_backend;
 
 import com.ayushsingh.cacmp_backend.config.cloudinary.CloudinaryConfigurationProperties;
+import com.ayushsingh.cacmp_backend.config.email.EmailConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -13,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-@EnableConfigurationProperties(CloudinaryConfigurationProperties.class)
+@EnableConfigurationProperties({CloudinaryConfigurationProperties.class, EmailConfigurationProperties.class})
 public class CacmpBackendApplication implements CommandLineRunner {
 
 
