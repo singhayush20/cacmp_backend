@@ -137,3 +137,50 @@ Sure, let's describe each role again:
      - Monitor system activity: Super admins may have access to monitoring tools and logs to track system activity, detect anomalies, and troubleshoot issues.
 
 Each role has specific responsibilities and access privileges tailored to its function within the system. By assigning roles to users and departments, you can control access to functionalities and ensure that users have appropriate permissions to perform their tasks effectively.
+
+# Todo:
+
+1. **Complaint Resolution Updates**:
+    - Integrate a status tracking system for complaints where users can see the progress of their complaints.
+    - Implement a notification system to update users when there is a status change in their complaints.
+    - Admin panel should have functionality to update the status of complaints and add notes on progress.
+
+2. **Review System (Feedback)**:
+    - Allow users to provide feedback and ratings on the resolution of their complaints.
+    - Implement a rating system for various services provided by the administration.
+    - Admin panel should have a dashboard to view and analyze feedback and ratings.
+
+3. **Emergency Service Support (Location-Based, Health, Law and Order)**:
+    - Implement a feature in the client app for users to request emergency services based on their location.
+    - Integrate with emergency service providers such as hospitals, police, and fire departments.
+    - Admin panel should have a dashboard to monitor and manage emergency service requests.
+
+4. **Basic Analytics (Web)**:
+    - Implement analytics to track the number of complaints received, resolved, pending, etc.
+    - Provide visual representations such as charts and graphs for better understanding.
+    - Admin panel should have access to detailed analytics for decision-making.
+
+5. **Admin Generated Notices and Events (Web and App)**:
+    - Allow admins to create and publish notices and events relevant to city residents.
+    - Notify users about upcoming events and important notices through the client app.
+    - Implement a calendar feature to display events and notices.
+
+6. **Alerts**:
+    - Implement an alert system to notify users about important announcements, emergencies, or updates.
+    - Alerts could be sent via push notifications, SMS, or emails.
+    - Admin panel should have the ability to send alerts to specific user groups or all users.
+
+7. **Email and Phone Verification**:
+    - Implement email and phone verification during user registration to ensure authenticity.
+    - Use verification codes or links for verification.
+    - Admin panel should have the ability to manage and monitor verified users.
+
+Additional features:
+- **Multi-language Support**: Implement support for multiple languages to cater to diverse populations.
+- **Community Forums**: Allow users to participate in community forums to discuss local issues and share ideas.
+- **Integration with Social Media**: Allow users to share feedback, complaints, and events on social media platforms.
+- **Accessibility Features**: Ensure the system is accessible to people with disabilities by implementing features such as screen reader compatibility and alternative text for images.
+- **Data Security and Privacy**: Implement robust security measures to protect user data and ensure compliance with data privacy regulations.
+- **Integration with Third-party Services**: Integrate with other municipal services or third-party platforms for additional functionality, such as public transportation information or utility bill payments.
+
+For the architecture, consider a modular and scalable approach using technologies like microservices architecture, cloud computing, and APIs for seamless integration of various features. Additionally, prioritize user experience and performance optimization for both the client app and admin panel. Regularly update and maintain the system to incorporate new features and address any issues or feedback from users.

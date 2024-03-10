@@ -4,7 +4,8 @@ import com.ayushsingh.cacmp_backend.config.security.util.JwtUtil;
 import com.ayushsingh.cacmp_backend.constants.AppConstants;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
-import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerRegisterDto;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerDetailsDto;
+import com.ayushsingh.cacmp_backend.models.projections.consumer.ConsumerDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import com.ayushsingh.cacmp_backend.services.ConsumerService;
 import com.ayushsingh.cacmp_backend.services.RefreshTokenService;
@@ -33,8 +34,8 @@ public class ConsumerController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<String>> register(@RequestBody ConsumerRegisterDto consumerRegisterDto) {
-        String consumerToken = consumerService.registerConsumer(consumerRegisterDto);
+    public ResponseEntity<ApiResponse<String>> register(@RequestBody ConsumerDetailsDto consumerDetailsDto) {
+        String consumerToken = consumerService.registerConsumer(consumerDetailsDto);
         return new ResponseEntity<>(new ApiResponse<>(consumerToken), HttpStatus.CREATED);
     }
 
@@ -77,4 +78,17 @@ public class ConsumerController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT', 'ROLE_NON_RESIDENT')")
+    @PutMapping("")
+    public ResponseEntity<ApiResponse<String>> updateConsumer(@RequestBody ConsumerDetailsDto consumerDto,@RequestParam("token") String userToken){
+        String token=consumerService.updateConsumer(consumerDto, userToken);
+        return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT', 'ROLE_NON_RESIDENT')")
+    @GetMapping("")
+    public ResponseEntity<ApiResponse<ConsumerDetailsProjection>> getConsumer(@RequestParam("token") String token){
+        ConsumerDetailsProjection consumerDetails=consumerService.getConsumer(token);
+        return new ResponseEntity<>(new ApiResponse<>(consumerDetails),HttpStatus.OK);
+    }
 }

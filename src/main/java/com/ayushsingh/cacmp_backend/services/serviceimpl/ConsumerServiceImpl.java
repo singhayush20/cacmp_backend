@@ -1,10 +1,10 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
-import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerRegisterDto;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerDetailsDto;
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
 import com.ayushsingh.cacmp_backend.models.entities.ConsumerAddress;
+import com.ayushsingh.cacmp_backend.models.projections.consumer.ConsumerDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.roles.ConsumerRole;
-import com.ayushsingh.cacmp_backend.repository.entities.ConsumerAddressRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.ConsumerRepository;
 import com.ayushsingh.cacmp_backend.services.ConsumerRoleService;
 import com.ayushsingh.cacmp_backend.services.ConsumerService;
@@ -36,8 +36,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Transactional
     @Override
-    public String registerConsumer(ConsumerRegisterDto consumerRegisterDto) {
-        String email=consumerRegisterDto.getEmail();
+    public String registerConsumer(ConsumerDetailsDto consumerDetailsDto) {
+        String email= consumerDetailsDto.getEmail();
         Boolean isConsumerPresent = isConsumerPresent(email);
         if(isConsumerPresent){
             throw new ApiException("Consumer with email: "+email+" already exists");
@@ -45,20 +45,20 @@ public class ConsumerServiceImpl implements ConsumerService {
         else{
             Consumer consumer=new Consumer();
             Set<ConsumerRole> roles=new HashSet<>();
-            Set<String> consumerRoles=consumerRegisterDto.getRoles();
+            Set<String> consumerRoles= consumerDetailsDto.getRoles();
             for(String consumerRole: consumerRoles){
                 ConsumerRole role=consumerRoleService.getConsumerRoleByRoleName(consumerRole);
                 roles.add(role);
             }
             consumer.setEmail(email);
-            consumer.setPassword(passwordEncoder.encode(consumerRegisterDto.getPassword()));
+            consumer.setPassword(passwordEncoder.encode(consumerDetailsDto.getPassword()));
             consumer.setRoles(roles);
-            consumer.setPhone(consumerRegisterDto.getPhone());
-            consumer.setGender(consumerRegisterDto.getGender());
-            consumer.setName(consumerRegisterDto.getName());
+            consumer.setPhone(consumerDetailsDto.getPhone());
+            consumer.setGender(consumerDetailsDto.getGender());
+            consumer.setName(consumerDetailsDto.getName());
             consumer.setIsEmailVerified(false);
-            if(consumerRegisterDto.getAddress()!=null) {
-                ConsumerAddress consumerAddress = this.modelMapper.map(consumerRegisterDto.getAddress(), ConsumerAddress.class);
+            if(consumerDetailsDto.getAddress()!=null) {
+                ConsumerAddress consumerAddress = this.modelMapper.map(consumerDetailsDto.getAddress(), ConsumerAddress.class);
                 consumer.setAddress(consumerAddress);
             }
             consumer=consumerRepository.save(consumer);
@@ -69,5 +69,20 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public String getConsumerToken(String email) {
         return consumerRepository.findTokenByEmail(email);
+    }
+
+    @Override
+    public String updateConsumer(ConsumerDetailsDto consumerDto, String userToken) {
+        Consumer consumer=consumerRepository.findByUserToken(userToken).orElseThrow(()->new ApiException("Consumer with email: "+consumerDto.getEmail()+" does not exist"));
+        consumer.setGender(consumerDto.getGender());
+        consumer.setName(consumerDto.getName());
+        consumer.setAddress(this.modelMapper.map(consumerDto.getAddress(), ConsumerAddress.class));
+        consumerRepository.save(consumer);
+        return consumer.getConsumerToken();
+    }
+
+    @Override
+    public ConsumerDetailsProjection getConsumer(String token) {
+        return consumerRepository.getConsumerDetails(token);
     }
 }

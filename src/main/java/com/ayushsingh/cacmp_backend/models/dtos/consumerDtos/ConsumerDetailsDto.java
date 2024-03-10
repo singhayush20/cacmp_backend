@@ -1,6 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.dtos.consumerDtos;
 
-import com.ayushsingh.cacmp_backend.models.dtos.consumerAddressDtos.ConsumerAddressCreateDto;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerAddressDtos.ConsumerAddressDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsumerRegisterDto {
+public class ConsumerDetailsDto {
     private String name;
 
     private String email;
@@ -23,7 +23,7 @@ public class ConsumerRegisterDto {
 
     private String gender;
 
-    private ConsumerAddressCreateDto address;
+    private ConsumerAddressDto address;
 
     private Set<String> roles;
 

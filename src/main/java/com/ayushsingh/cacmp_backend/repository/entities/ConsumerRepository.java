@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.repository.entities;
 
+import com.ayushsingh.cacmp_backend.models.projections.consumer.ConsumerDetailsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
@@ -20,4 +21,25 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
     @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.consumerToken = ?1")
     Optional<Consumer> findByConsumerToken(String consumerToken);
+
+    @Query("""
+            SELECT
+            c.consumerToken as consumerToken,
+            c.name as name,
+            c.email as email,
+            c.phone as phone,
+            c.gender as gender,
+            c.address.houseNo as houseNo,
+            c.address.locality as locality,
+            c.address.wardNo as wardNo,
+            c.address.pinCode as pinCode,
+            c.address.city as city,
+            c.address.state as state
+            FROM
+            com.ayushsingh.cacmp_backend.models.entities.Consumer c WHERE c.consumerToken = ?1
+            """)
+    ConsumerDetailsProjection getConsumerDetails(String token);
+
+    @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.consumerToken = ?1")
+   Optional<Consumer> findByUserToken(String userToken);
 }
