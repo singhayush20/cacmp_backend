@@ -20,7 +20,10 @@ import com.ayushsingh.cacmp_backend.repository.entities.ConsumerRepository;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ComplaintFilter;
 import com.ayushsingh.cacmp_backend.repository.specifications.complaint.ComplaintSpecification;
 import com.ayushsingh.cacmp_backend.services.ComplaintService;
+import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import com.ayushsingh.cacmp_backend.util.imageUtil.ImageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -45,7 +48,8 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Transactional
     @Override
-    public String createNewComplaint(ComplaintCreateDto complaintCreateDto, MultipartFile[] images) {
+    public String createNewComplaint(ComplaintCreateDto complaintCreateDto) {
+
         String categoryToken = complaintCreateDto.getCategoryToken();
         Optional<Category> categoryOptional = categoryRepository.findByCategoryToken(categoryToken);
         if (categoryOptional.isEmpty()) {
@@ -69,7 +73,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         ComplaintLocation complaintLocation = saveComplaintLocation(complaintCreateDto);
         complaint.setComplaintLocation(complaintLocation);
         complaint = complaintRepository.save(complaint);
-        saveImages(images, complaint);
 
         return complaint.getComplaintToken();
     }
@@ -157,9 +160,17 @@ public class ComplaintServiceImpl implements ComplaintService {
         }).toList();
     }
 
+    @Transactional
     @Override
     public List<ComplaintListDetailsProjection> getComplaintsForConsumer(String token) {
         return this.complaintRepository.findAllByConsumer(token);
+    }
+
+    @Override
+    public String saveComplaintImages(String token, MultipartFile[] images) {
+        Complaint complaint = this.complaintRepository.findByComplaintToken(token).orElseThrow(() -> new ApiException("Complaint with token " + token + " not found"));
+        saveImages(images, complaint);
+        return token;
     }
 
 

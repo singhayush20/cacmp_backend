@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ComplaintService {
 
-    String createNewComplaint(ComplaintCreateDto complaintCreateDto, MultipartFile[] images);
+    String createNewComplaint(ComplaintCreateDto complaintCreateDto);
 
     String changeStatus(ComplaintStatusDto complaintDto);
 
@@ -38,4 +38,6 @@ public interface ComplaintService {
     List<ComplaintListDetailsDto> getFilteredComplaints(ComplaintFilter complaintFilter, Sort sort);
 
     List<ComplaintListDetailsProjection> getComplaintsForConsumer(String token);
+
+    String saveComplaintImages(String token, MultipartFile[] images);
 }

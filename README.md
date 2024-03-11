@@ -175,6 +175,10 @@ Each role has specific responsibilities and access privileges tailored to its fu
     - Use verification codes or links for verification.
     - Admin panel should have the ability to manage and monitor verified users.
 
+8. **Public notices and information about events (like news)**
+    - This can be a good feature for the web frontend point of view (upload images, write about it, location)
+    - This can be shown in the home-page of the application
+
 Additional features:
 - **Multi-language Support**: Implement support for multiple languages to cater to diverse populations.
 - **Community Forums**: Allow users to participate in community forums to discuss local issues and share ideas.

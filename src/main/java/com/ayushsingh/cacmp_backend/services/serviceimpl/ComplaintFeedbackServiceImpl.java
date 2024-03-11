@@ -8,6 +8,7 @@ import com.ayushsingh.cacmp_backend.models.projections.feedbackComplaint.Complai
 import com.ayushsingh.cacmp_backend.repository.entities.ComplaintFeedbackRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.ComplaintRepository;
 import com.ayushsingh.cacmp_backend.services.ComplaintFeedbackService;
+import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,9 @@ public class ComplaintFeedbackServiceImpl implements ComplaintFeedbackService {
             complaintFeedback.setFeedbackRating(FeedbackRating.fromValue(complaintFeedbackDto.getFeedbackRating()));
            ComplaintFeedback feedback= complaintFeedbackRepository.save(complaintFeedback);
            return feedback.getFeedbackToken();
-        }}
+        }
+        throw new ApiException("Complaint with token: "+complaintFeedbackDto.getComplaintToken()+" does not exist");
+    }
 
     @Override
     public ComplaintFeedbackProjection getFeedbackForComplaint(String complaintToken) {

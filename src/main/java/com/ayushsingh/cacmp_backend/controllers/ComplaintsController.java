@@ -32,15 +32,22 @@ public class ComplaintsController {
     private final ComplaintService complaintService;
     private final ComplaintFeedbackService complaintFeedbackService;
 
-    @PreAuthorize("hasRole('ROLE_CONSUMER')")
+
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<String>> save(@RequestPart("complaintData") ComplaintCreateDto complaintData,
-                                       @RequestPart("images") MultipartFile[] images){
-        String complaintToken=complaintService.createNewComplaint(complaintData, images);
+    public ResponseEntity<ApiResponse<String>> save(@RequestBody ComplaintCreateDto complaintCreateDto){
+        String complaintToken=complaintService.createNewComplaint(complaintCreateDto);
         return  new ResponseEntity<>(new ApiResponse<>(complaintToken), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ROLE_CONSUMER')")
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
+    @PostMapping("/images/save")
+    public ResponseEntity<ApiResponse<String>> saveComplaintImages(@RequestParam("token") String token, @RequestPart("images") MultipartFile[] images){
+        String complaintToken=complaintService.saveComplaintImages(token, images);
+        return  new ResponseEntity<>(new ApiResponse<>(complaintToken), HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @PutMapping("/change-status")
     public ResponseEntity<ApiResponse<String>> changeComplaintStatus(ComplaintStatusDto complaintDto){
         String token=complaintService.changeStatus(complaintDto);
