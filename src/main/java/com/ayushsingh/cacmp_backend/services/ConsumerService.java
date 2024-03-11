@@ -18,4 +18,8 @@ public interface ConsumerService {
     void sendVerificationEmail(String email);
 
     void verifyEmailOTP(String email, int otp);
+
+    void sendPhoneVerificationOTP(Long phone);
+
+    void verifyPhoneOTP(Long phone, Integer otp);
 }

@@ -2,6 +2,7 @@ package com.ayushsingh.cacmp_backend;
 
 import com.ayushsingh.cacmp_backend.config.cloudinary.CloudinaryConfigurationProperties;
 import com.ayushsingh.cacmp_backend.config.email.EmailConfigurationProperties;
+import com.ayushsingh.cacmp_backend.config.twilio.TwilioConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -14,9 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-@EnableConfigurationProperties({CloudinaryConfigurationProperties.class, EmailConfigurationProperties.class})
+@EnableConfigurationProperties({CloudinaryConfigurationProperties.class, EmailConfigurationProperties.class, TwilioConfigurationProperties.class})
 public class CacmpBackendApplication implements CommandLineRunner {
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(CacmpBackendApplication.class, args);
@@ -35,6 +35,6 @@ public class CacmpBackendApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Application is running...");
+
 	}
 }

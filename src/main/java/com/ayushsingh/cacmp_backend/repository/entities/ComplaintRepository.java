@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaSpecificationExecutor<Complaint> {
 
@@ -102,4 +103,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaS
             ORDER BY c.createdAt DESC
             """)
     List<ComplaintListDetailsProjection> findAllByConsumer(String token);
+
+    @Query("SELECT c FROM Complaint c WHERE c.complaintToken = ?1")
+    Optional<Complaint> findByComplaintToken(String complaintToken);
 }

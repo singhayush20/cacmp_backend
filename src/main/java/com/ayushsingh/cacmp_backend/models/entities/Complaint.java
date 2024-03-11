@@ -65,7 +65,7 @@ public class Complaint {
     private Category category;
 
     @OneToMany(mappedBy = "complaint", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<ComplaintImage> complaintImages = new HashSet<ComplaintImage>();
+    private Set<ComplaintImage> complaintImages = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id", nullable = false)
@@ -74,6 +74,9 @@ public class Complaint {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "complaint_location_id", referencedColumnName = "complaint_location_id")
     private ComplaintLocation complaintLocation;
+
+
+
 
     @CreatedDate
     @CreationTimestamp

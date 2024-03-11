@@ -5,9 +5,12 @@ import com.ayushsingh.cacmp_backend.models.constants.ComplaintStatus;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintListDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintStatusDto;
+import com.ayushsingh.cacmp_backend.models.dtos.complaintFeedbackDtos.ComplaintFeedbackDto;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintListDetailsProjection;
+import com.ayushsingh.cacmp_backend.models.projections.feedbackComplaint.ComplaintFeedbackProjection;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ComplaintFilter;
+import com.ayushsingh.cacmp_backend.services.ComplaintFeedbackService;
 import com.ayushsingh.cacmp_backend.services.ComplaintService;
 import com.ayushsingh.cacmp_backend.util.responseUtil.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ import java.util.List;
 public class ComplaintsController {
 
     private final ComplaintService complaintService;
+    private final ComplaintFeedbackService complaintFeedbackService;
 
     @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @PostMapping("/save")
@@ -115,4 +119,18 @@ public class ComplaintsController {
         return new ResponseEntity<>(new ApiResponse<>(images),HttpStatus.OK);
     }
 
+
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
+    @PostMapping("/feedback")
+    public ResponseEntity<ApiResponse<String>> addComplaintFeedback(@RequestBody ComplaintFeedbackDto complaintFeedback){
+        String token=complaintFeedbackService.saveFeedback(complaintFeedback);
+        return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_DEPARTMENT','ROLE_RESIDENT','ROLE_NON_RESIDENT')")
+    @GetMapping("/feedback/{token}")
+    public ResponseEntity<ApiResponse<ComplaintFeedbackProjection>> getFeedbackForComplaint(@PathVariable("token") String complaintToken){
+        ComplaintFeedbackProjection feedback=complaintFeedbackService.getFeedbackForComplaint(complaintToken);
+        return new ResponseEntity<>(new ApiResponse<>(feedback),HttpStatus.OK);
+    }
 }

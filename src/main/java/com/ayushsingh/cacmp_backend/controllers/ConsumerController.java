@@ -92,15 +92,27 @@ public class ConsumerController {
         return new ResponseEntity<>(new ApiResponse<>(consumerDetails),HttpStatus.OK);
     }
 
-    @GetMapping("/email-verification")
+    @GetMapping("/email/otp")
     public ResponseEntity<ApiResponse<String>> sendVerificationEmail(@RequestParam("email") String email){
         consumerService.sendVerificationEmail(email);
         return new ResponseEntity<>(new ApiResponse<>("Email sent successfully"),HttpStatus.OK);
     }
 
-    @GetMapping("/email-verification/verify")
+    @GetMapping("/email/verify")
     public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestParam("email") String email,@RequestParam("otp") int otp){
         consumerService.verifyEmailOTP(email,otp);
         return new ResponseEntity<>(new ApiResponse<>("Email verified successfully"),HttpStatus.OK);
+    }
+
+    @GetMapping("/phone/otp")
+    public ResponseEntity<ApiResponse<String>> sendVerificationPhone(@RequestParam("phone") Long phone){
+        consumerService.sendPhoneVerificationOTP(phone);
+        return new ResponseEntity<>(new ApiResponse<>("Phone sent successfully"),HttpStatus.OK);
+    }
+
+    @GetMapping("/phone/verify")
+    public ResponseEntity<ApiResponse<String>> verifyPhone(@RequestParam("phone") Long phone,@RequestParam("otp") int otp){
+        consumerService.verifyPhoneOTP(phone,otp);
+        return new ResponseEntity<>(new ApiResponse<>("Phone verified successfully"),HttpStatus.OK);
     }
 }

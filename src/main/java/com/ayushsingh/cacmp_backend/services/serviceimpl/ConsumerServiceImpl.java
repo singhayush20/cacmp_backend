@@ -1,6 +1,7 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
 import com.ayushsingh.cacmp_backend.config.email.EmailConfigurationProperties;
+import com.ayushsingh.cacmp_backend.config.twilio.TwilioConfigurationProperties;
 import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerDetailsDto;
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
 import com.ayushsingh.cacmp_backend.models.entities.ConsumerAddress;
@@ -13,6 +14,9 @@ import com.ayushsingh.cacmp_backend.util.emailUtil.AccountVerificationEmailConte
 import com.ayushsingh.cacmp_backend.util.emailUtil.MailService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import com.ayushsingh.cacmp_backend.util.otpUtil.OtpService;
+import com.twilio.Twilio;
+import com.twilio.rest.verify.v2.service.Verification;
+import com.twilio.rest.verify.v2.service.VerificationCheck;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +40,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final MailService mailService;
     private final OtpService otpService;
     private final EmailConfigurationProperties emailConfigurationProperties;
+    private final TwilioConfigurationProperties twilioConfigurationProperties;
 
     @Override
     public Boolean isConsumerPresent(String email) {
@@ -45,17 +50,16 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Transactional
     @Override
     public String registerConsumer(ConsumerDetailsDto consumerDetailsDto) {
-        String email= consumerDetailsDto.getEmail();
+        String email = consumerDetailsDto.getEmail();
         Boolean isConsumerPresent = isConsumerPresent(email);
-        if(isConsumerPresent){
-            throw new ApiException("Consumer with email: "+email+" already exists");
-        }
-        else{
-            Consumer consumer=new Consumer();
-            Set<ConsumerRole> roles=new HashSet<>();
-            Set<String> consumerRoles= consumerDetailsDto.getRoles();
-            for(String consumerRole: consumerRoles){
-                ConsumerRole role=consumerRoleService.getConsumerRoleByRoleName(consumerRole);
+        if (isConsumerPresent) {
+            throw new ApiException("Consumer with email: " + email + " already exists");
+        } else {
+            Consumer consumer = new Consumer();
+            Set<ConsumerRole> roles = new HashSet<>();
+            Set<String> consumerRoles = consumerDetailsDto.getRoles();
+            for (String consumerRole : consumerRoles) {
+                ConsumerRole role = consumerRoleService.getConsumerRoleByRoleName(consumerRole);
                 roles.add(role);
             }
             consumer.setEmail(email);
@@ -65,11 +69,11 @@ public class ConsumerServiceImpl implements ConsumerService {
             consumer.setGender(consumerDetailsDto.getGender());
             consumer.setName(consumerDetailsDto.getName());
             consumer.setIsEmailVerified(false);
-            if(consumerDetailsDto.getAddress()!=null) {
+            if (consumerDetailsDto.getAddress() != null) {
                 ConsumerAddress consumerAddress = this.modelMapper.map(consumerDetailsDto.getAddress(), ConsumerAddress.class);
                 consumer.setAddress(consumerAddress);
             }
-            consumer=consumerRepository.save(consumer);
+            consumer = consumerRepository.save(consumer);
             return consumer.getConsumerToken();
         }
     }
@@ -81,7 +85,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public String updateConsumer(ConsumerDetailsDto consumerDto, String userToken) {
-        Consumer consumer=consumerRepository.findByUserToken(userToken).orElseThrow(()->new ApiException("Consumer with email: "+consumerDto.getEmail()+" does not exist"));
+        Consumer consumer = consumerRepository.findByUserToken(userToken).orElseThrow(() -> new ApiException("Consumer with email: " + consumerDto.getEmail() + " does not exist"));
         consumer.setGender(consumerDto.getGender());
         consumer.setName(consumerDto.getName());
         consumer.setAddress(this.modelMapper.map(consumerDto.getAddress(), ConsumerAddress.class));
@@ -96,26 +100,49 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public void sendVerificationEmail(String email) {
-        int otp=otpService.generateOTP(email);
+        int otp = otpService.generateOTP(email);
         AccountVerificationEmailContext emailContext = new AccountVerificationEmailContext(emailConfigurationProperties);
         emailContext.init();
         emailContext.setTo(email);
         emailContext.setOTP(String.valueOf(otp));
-        try{
+        try {
             mailService.sendEmail(emailContext);
-        }
-        catch(MessagingException e){
-            log.error("Some error occurred while sending email: "+e.getMessage());
+        } catch (MessagingException e) {
+            log.error("Some error occurred while sending email: " + e.getMessage());
         }
     }
 
     @Override
     public void verifyEmailOTP(String email, int otp) {
-       int storedOTP=otpService.getOTP(email);
-       log.info("Stored otp: "+storedOTP+" received otp: "+otp);
-       if(storedOTP!=otp){
-           throw new ApiException("The otp is either incorrect or expired!");
-       }
-       otpService.clearOTP(email);
+        int storedOTP = otpService.getOTP(email);
+        log.info("Stored otp: " + storedOTP + " received otp: " + otp);
+        if (storedOTP != otp) {
+            throw new ApiException("The otp is either incorrect or expired!");
+        }
+        otpService.clearOTP(email);
+    }
+
+    @Override
+    public void sendPhoneVerificationOTP(Long phone) {
+        Twilio.init(twilioConfigurationProperties.accountSid(), twilioConfigurationProperties.authToken());
+        Verification verification = Verification.creator(twilioConfigurationProperties.serviceSid(),
+                        phone.toString(),
+                        "sms")
+                .create();
+        log.info("otp sent to: {}",phone);
+    }
+
+    @Override
+    public void verifyPhoneOTP(Long phone,Integer otp) {
+        try {
+            VerificationCheck verificationCheck = VerificationCheck.creator(
+                    twilioConfigurationProperties.serviceSid())
+                    .setTo(phone.toString())
+                    .setCode(otp.toString())
+                    .create();
+            log.info("verification status: {}",verificationCheck.getStatus());
+        } catch (Exception e) {
+            throw new ApiException("The otp is either incorrect or expired!");
+        }
     }
 }
