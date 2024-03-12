@@ -22,8 +22,6 @@ import com.ayushsingh.cacmp_backend.repository.specifications.complaint.Complain
 import com.ayushsingh.cacmp_backend.services.ComplaintService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import com.ayushsingh.cacmp_backend.util.imageUtil.ImageService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -87,6 +85,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintLocation;
     }
 
+    @Transactional
     @Override
     public String changeStatus(ComplaintStatusDto complaintDto) {
         String status = complaintDto.getComplaintStatus();
@@ -162,8 +161,19 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Transactional
     @Override
-    public List<ComplaintListDetailsProjection> getComplaintsForConsumer(String token) {
-        return this.complaintRepository.findAllByConsumer(token);
+    public List<ComplaintListDetailsDto> getComplaintsForConsumer(ComplaintFilter filter, Sort sort) {
+        Specification<Complaint> spec = ComplaintSpecification.filterComplaints(filter);
+        List<Complaint> complaints = complaintRepository.findAll(spec, sort);
+        return complaints.stream().map(complaint -> {
+
+            ComplaintListDetailsDto complaintListDetailsDto = new ComplaintListDetailsDto();
+            complaintListDetailsDto.setComplaintToken(complaint.getComplaintToken());
+            complaintListDetailsDto.setComplaintSubject(complaint.getComplaintSubject());
+            complaintListDetailsDto.setComplaintStatus(complaint.getComplaintStatus());
+            complaintListDetailsDto.setComplaintDescription(complaint.getComplaintDescription());
+            complaintListDetailsDto.setComplaintPriority(complaint.getComplaintPriority());
+            return complaintListDetailsDto;
+        }).toList();
     }
 
     @Override

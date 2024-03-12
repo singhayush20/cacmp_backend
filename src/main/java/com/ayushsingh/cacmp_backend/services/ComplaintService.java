@@ -3,7 +3,6 @@ package com.ayushsingh.cacmp_backend.services;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintListDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintStatusDto;
-import com.ayushsingh.cacmp_backend.models.entities.Complaint;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintListDetailsProjection;
 
@@ -37,7 +36,7 @@ public interface ComplaintService {
 
     List<ComplaintListDetailsDto> getFilteredComplaints(ComplaintFilter complaintFilter, Sort sort);
 
-    List<ComplaintListDetailsProjection> getComplaintsForConsumer(String token);
+    List<ComplaintListDetailsDto> getComplaintsForConsumer(ComplaintFilter complaintFilter, Sort sort);
 
     String saveComplaintImages(String token, MultipartFile[] images);
 }

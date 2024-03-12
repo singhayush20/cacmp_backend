@@ -29,6 +29,9 @@ public class ComplaintSpecification {
             if(filter.getCategoryToken() != null){
                 predicates.add(criteriaBuilder.equal(root.get("category").get("categoryToken"), filter.getCategoryToken()));
             }
+            if(filter.getCustomerToken()!=null){
+                predicates.add(criteriaBuilder.equal(root.get("consumer").get("consumerToken"), filter.getCustomerToken()));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

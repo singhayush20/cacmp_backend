@@ -35,6 +35,6 @@ public class CacmpBackendApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-
+		System.out.println("Application is running...");
 	}
 }

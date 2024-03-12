@@ -13,5 +13,6 @@ public class ComplaintFilter {
     private Long pincode;
     private String wardNo;
     private String categoryToken;
+    private String customerToken;
 }
 

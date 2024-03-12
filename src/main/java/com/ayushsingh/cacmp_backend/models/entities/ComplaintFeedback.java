@@ -40,7 +40,7 @@ public class ComplaintFeedback {
     private FeedbackRating feedbackRating;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "complaint_feedback_id", referencedColumnName = "complaint_feedback_id")
+    @JoinColumn(name = "complaint_id", referencedColumnName = "complaint_id")
     private Complaint complaint;
 
     @CreatedDate
