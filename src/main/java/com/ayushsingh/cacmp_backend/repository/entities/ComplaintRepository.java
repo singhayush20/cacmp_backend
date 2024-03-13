@@ -142,4 +142,10 @@ public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaS
 
     @Query("SELECT c FROM Complaint c WHERE c.closedAt IS NOT NULL")
     List<Complaint> findAllResolvedComplaints();
+
+
+    @Query("SELECT COUNT(c) FROM Complaint c WHERE c.category.categoryToken = :categoryToken")
+    Long countComplaintsByCategoryToken(@Param("categoryToken") String categoryToken);
+
+
 }

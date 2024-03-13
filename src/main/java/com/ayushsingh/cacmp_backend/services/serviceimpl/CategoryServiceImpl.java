@@ -6,6 +6,7 @@ import com.ayushsingh.cacmp_backend.models.entities.Category;
 import com.ayushsingh.cacmp_backend.models.entities.Department;
 import com.ayushsingh.cacmp_backend.models.projections.category.CategoryDetailsProjection;
 import com.ayushsingh.cacmp_backend.repository.entities.CategoryRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.ComplaintRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.services.CategoryService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
@@ -26,6 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper;
+    private final ComplaintRepository complaintRepository;
     @Override
     public String createCategory(CategoryCreateDto categoryCreateDto) {
         String categoryName = categoryCreateDto.getCategoryName();
@@ -50,6 +52,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public Long deleteCategory(String categoryToken) {
+        Long count=complaintRepository.countComplaintsByCategoryToken(categoryToken);
+        if(count!=0){
+            throw new ApiException("Category cannot be deleted because there are complaints associated with it");
+        }
         categoryRepository.deleteByCategoryToken(categoryToken);
         return categoryRepository.count();
     }

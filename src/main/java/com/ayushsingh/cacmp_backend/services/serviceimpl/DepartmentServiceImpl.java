@@ -5,6 +5,8 @@ import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegiste
 import com.ayushsingh.cacmp_backend.models.entities.Department;
 import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 import com.ayushsingh.cacmp_backend.models.roles.DepartmentRole;
+import com.ayushsingh.cacmp_backend.repository.entities.CategoryRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.ComplaintRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.services.DepartmentRoleService;
 import com.ayushsingh.cacmp_backend.services.DepartmentService;
@@ -29,6 +31,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final DepartmentRoleService departmentRoleService;
+   private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     @Override
     public Boolean isDepartmentCredentialsPresent(String username) {
@@ -61,6 +64,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public String getDepartmentToken(String username) {
+
         return departmentRepository.findTokenByUsername(username);
     }
 
@@ -76,6 +80,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional
     @Override
     public void deleteDepartment(String departmentToken) {
+        Long count=categoryRepository.getCategoryCountByDepartmentUsername(departmentToken);
+        if(count!=0){
+            throw new ApiException("Department cannot be deleted because there are categories associated with it");
+        }
         departmentRepository.deleteByDeptToken(departmentToken);
     }
 

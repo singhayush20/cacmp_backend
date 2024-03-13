@@ -24,6 +24,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private final ComplaintLocationRepository complaintLocationRepository;
     private final ConsumerAddressRepository consumerAddressRepository;
     private final DepartmentRepository departmentRepository;
+    private final CategoryRepository categoryRepository;
 
 
     @Override
@@ -65,7 +66,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         analyticsMap.put("departmentCount",departmentCount);
 
         //Get the category count
-        Long categoryCount=departmentRepository.count();
+        Long categoryCount=categoryRepository.count();
         analyticsMap.put("categoryCount",categoryCount);
 
         //Get the consumer count
