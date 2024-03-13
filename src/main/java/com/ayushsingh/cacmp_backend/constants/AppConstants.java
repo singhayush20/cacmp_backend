@@ -38,7 +38,11 @@ public class AppConstants {
             "/api/v1/consumer/email/otp",
             "/api/v1/consumer/email/verify",
             "/api/v1/consumer/phone/otp",
-            "/api/v1/consumer/phone/verify"
+            "/api/v1/consumer/phone/verify",
+
+
+            //!temporary-should be removed
+            "/api/v1/analytics/admin-dashboard"
     };
 
 }

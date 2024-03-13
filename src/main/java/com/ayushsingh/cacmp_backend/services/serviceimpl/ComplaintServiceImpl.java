@@ -29,6 +29,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -88,10 +92,26 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Transactional
     @Override
     public String changeStatus(ComplaintStatusDto complaintDto) {
-        String status = complaintDto.getComplaintStatus();
-        ComplaintStatus newStatus = ComplaintStatus.fromValue(status);
-        this.complaintRepository.updateComplaintStatus(newStatus, complaintDto.getComplaintToken());
-        return complaintDto.getComplaintToken();
+
+        Complaint complaint = complaintRepository.findByComplaintToken(complaintDto.getComplaintToken()).orElseThrow(()->new ApiException("Complaint with token: "+complaintDto.getComplaintToken()+" not found!"));
+        ComplaintStatus currentStatus=complaint.getComplaintStatus();
+
+        ComplaintStatus newStatus = ComplaintStatus.fromValue(complaintDto.getComplaintStatus());
+//        this.complaintRepository.updateComplaintStatus(newStatus, complaintDto.getComplaintToken());
+
+        if(currentStatus==ComplaintStatus.CLOSED){
+            throw new ApiException("This complaint has already been closed!");
+        }
+        else{
+            complaint.setComplaintStatus(newStatus);
+
+            if(newStatus==ComplaintStatus.CLOSED){
+                //set current time as closed at
+               Date currentTime =Date.from(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC));
+               complaint.setClosedAt(currentTime);
+            }
+            return complaintRepository.save(complaint).getComplaintToken();
+        }
     }
 
     @Override

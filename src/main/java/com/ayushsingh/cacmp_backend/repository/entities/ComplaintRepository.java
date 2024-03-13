@@ -12,7 +12,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaSpecificationExecutor<Complaint> {
@@ -106,4 +108,38 @@ public interface ComplaintRepository extends JpaRepository<Complaint,Long>, JpaS
 
     @Query("SELECT c FROM Complaint c WHERE c.complaintToken = ?1")
     Optional<Complaint> findByComplaintToken(String complaintToken);
+
+
+    @Query("SELECT c.complaintStatus AS status, COUNT(c) AS count FROM Complaint c GROUP BY c.complaintStatus")
+    List<Map<String, Long>> countByStatus();
+
+    @Query("SELECT c.complaintPriority AS priority, COUNT(c) AS count FROM Complaint c GROUP BY c.complaintPriority")
+    List<Map<String, Long>> countByPriority();
+
+    @Query("SELECT c.category.department.departmentName AS department, COUNT(c) AS count FROM Complaint c GROUP BY c.category.department")
+    List<Map<String, Long>> countByDepartment();
+
+    @Query("SELECT c.category.categoryName AS category, COUNT(c) AS count FROM Complaint c GROUP BY c.category")
+    List<Map<String, Long>> countByCategory();
+
+    @Query("SELECT c.category.department.departmentName AS department, c.complaintStatus AS status, COUNT(c) AS count FROM Complaint c GROUP BY c.category.department, c.complaintStatus")
+    List<Map<String, Object>> countByDepartmentAndStatus();
+
+    @Query("SELECT c.category.department.departmentName AS department, c.complaintPriority AS priority, COUNT(c) AS count FROM Complaint c GROUP BY c.category.department, c.complaintPriority")
+    List<Map<String, Object>> countByDepartmentAndPriority();
+
+    @Query("SELECT cl.pincode AS pincode, COUNT(c) AS count FROM Complaint c JOIN c.complaintLocation cl GROUP BY cl.pincode")
+    List<Map<Long, Long>> countComplaintsByPincode();
+
+    @Query("SELECT cl.wardNo AS wardNo, COUNT(c) AS count FROM Complaint c JOIN c.complaintLocation cl GROUP BY cl.wardNo")
+    List<Map<String, Long>> countComplaintsByWardNo();
+
+    @Query("SELECT COUNT(c) FROM Complaint c WHERE c.createdAt BETWEEN :startDate AND :endDate")
+    Long countByCreatedAtBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT COUNT(c) FROM Complaint c WHERE c.closedAt BETWEEN :startDate AND :endDate")
+    Long countByClosedAtBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT c FROM Complaint c WHERE c.closedAt IS NOT NULL")
+    List<Complaint> findAllResolvedComplaints();
 }

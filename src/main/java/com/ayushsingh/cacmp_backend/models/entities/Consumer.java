@@ -28,8 +28,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import com.ayushsingh.cacmp_backend.models.roles.ConsumerRole;
 
-@Table
-@Entity(name = "consumer")
+@Table(name = "consumer")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor

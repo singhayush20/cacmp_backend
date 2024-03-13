@@ -88,6 +88,9 @@ public class Complaint {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Column(name = "closed_at")
+    private Date closedAt;
+
     @PrePersist
     public void generateToken() {
         if (this.complaintToken == null) {

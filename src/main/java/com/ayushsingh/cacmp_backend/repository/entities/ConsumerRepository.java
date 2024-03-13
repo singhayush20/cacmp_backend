@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ayushsingh.cacmp_backend.models.entities.Consumer;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
@@ -42,4 +44,11 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
     @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.consumerToken = ?1")
    Optional<Consumer> findByUserToken(String userToken);
+
+
+    @Query("SELECT c.address.wardNo AS wardNo, COUNT(c) AS count FROM Consumer c GROUP BY c.address.wardNo")
+    List<Map<String, Long>> countConsumersByWardNo();
+
+    @Query("SELECT c.address.pinCode AS pinCode, COUNT(c) AS count FROM Consumer c GROUP BY c.address.pinCode")
+    List<Map<Long, Long>> countConsumersByPinCode();
 }
