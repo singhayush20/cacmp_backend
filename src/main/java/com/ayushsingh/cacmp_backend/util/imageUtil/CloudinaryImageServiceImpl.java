@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -19,7 +20,7 @@ public class CloudinaryImageServiceImpl implements ImageService {
 
 
     @Override
-    public Map<String,Object> upload(MultipartFile file) {
+    public Map<String,Object> uploadComplaintImage(MultipartFile file) {
 
         try {
             log.info("Uploading file to cloudinary...");
@@ -28,7 +29,20 @@ public class CloudinaryImageServiceImpl implements ImageService {
             return uploadResult;
         }
         catch (IOException e){
-            throw  new ApiException("Error uploading the image");
+            throw  new ApiException("Error uploading the complaint image");
+        }
+    }
+
+    @Override
+    public Map<String, Object> uploadAlertImage(MultipartFile file) {
+        try{
+            log.info("Uploading alert image...");
+            Map<String, Object> uploadOptions = new HashMap<>();
+            uploadOptions.put("folder", "Alert Images");
+            return (Map<String,Object>) cloudinary.uploader().upload(file, uploadOptions);
+        }
+        catch(IOException e){
+            throw  new ApiException("Error uploading the alert image");
         }
     }
 }

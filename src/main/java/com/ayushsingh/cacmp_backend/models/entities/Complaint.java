@@ -100,17 +100,14 @@ public class Complaint {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Complaint complaint = (Complaint) o;
-        return Objects.equals(complaintId, complaint.complaintId)
-                && Objects.equals(complaintSubject, complaint.complaintSubject);
+        return Objects.equals(complaintId, complaint.complaintId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(complaintId, complaintSubject);
+        return Objects.hash(complaintId);
     }
 }

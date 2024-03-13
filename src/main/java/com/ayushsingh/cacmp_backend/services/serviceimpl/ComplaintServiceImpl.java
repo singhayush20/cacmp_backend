@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
@@ -97,7 +96,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         ComplaintStatus currentStatus=complaint.getComplaintStatus();
 
         ComplaintStatus newStatus = ComplaintStatus.fromValue(complaintDto.getComplaintStatus());
-//        this.complaintRepository.updateComplaintStatus(newStatus, complaintDto.getComplaintToken());
 
         if(currentStatus==ComplaintStatus.CLOSED){
             throw new ApiException("This complaint has already been closed!");
@@ -106,7 +104,6 @@ public class ComplaintServiceImpl implements ComplaintService {
             complaint.setComplaintStatus(newStatus);
 
             if(newStatus==ComplaintStatus.CLOSED){
-                //set current time as closed at
                Date currentTime =Date.from(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC));
                complaint.setClosedAt(currentTime);
             }
@@ -151,7 +148,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     private void saveImages(MultipartFile[] images, Complaint complaint) {
         for (MultipartFile image : images) {
-            Map<String, Object> uploadResult = imageService.upload(image);
+            Map<String, Object> uploadResult = imageService.uploadComplaintImage(image);
             ComplaintImage complaintImage = new ComplaintImage();
             complaintImage.setImageUrl((String) uploadResult.get("secure_url"));
             complaintImage.setPublicId((String) uploadResult.get("public_id"));
