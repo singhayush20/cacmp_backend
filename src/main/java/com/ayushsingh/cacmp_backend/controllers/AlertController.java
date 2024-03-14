@@ -18,6 +18,7 @@ public class AlertController {
 
     private final AlertService alertService;
 
+
     @PostMapping("/new")
     public ResponseEntity<ApiResponse<String>> createAlert(@RequestBody AlertCreateDto alertCreateDto) {
         String token = alertService.createAlert(alertCreateDto);
@@ -30,13 +31,21 @@ public class AlertController {
         return new ResponseEntity<>(new ApiResponse<>(alertDetailsDto), HttpStatus.OK);
     }
 
-    @PostMapping("/alert-image/upload")
+    @PostMapping("/upload/image")
     public ResponseEntity<ApiResponse<String>> saveAlertImages(@RequestParam String token, @RequestParam MultipartFile[] images) {
         return new ResponseEntity<>(new ApiResponse<>(this.alertService.saveAlertImages(token, images)), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/upload/file")
+    public ResponseEntity<ApiResponse<String>> saveAlertFiles(@RequestParam("alertToken") String token, @RequestPart("file") MultipartFile[] files) {
+        String alertToken=alertService.saveAlertImages(token,files);
+        return new ResponseEntity<>(new ApiResponse<>(alertToken),HttpStatus.OK);
     }
 
     @PutMapping("/update-status")
     public ResponseEntity<ApiResponse<String>> updateStatus(@RequestBody AlertStatusDto alertStatusDto) {
         return new ResponseEntity<>(new ApiResponse<>(this.alertService.updateStatus(alertStatusDto)), HttpStatus.OK);
     }
+
+
 }

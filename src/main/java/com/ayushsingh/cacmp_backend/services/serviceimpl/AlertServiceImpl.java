@@ -4,14 +4,16 @@ import com.ayushsingh.cacmp_backend.models.constants.PublishStatus;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertStatusDto;
+import com.ayushsingh.cacmp_backend.models.dtos.driveFileDtos.UploadedFileDto;
 import com.ayushsingh.cacmp_backend.models.entities.Alert;
+import com.ayushsingh.cacmp_backend.models.entities.AlertDocument;
 import com.ayushsingh.cacmp_backend.models.entities.AlertImage;
-import com.ayushsingh.cacmp_backend.models.entities.ComplaintImage;
 import com.ayushsingh.cacmp_backend.models.projections.alertDocument.AlertDocumentUrlProjection;
 import com.ayushsingh.cacmp_backend.repository.entities.AlertDocumentRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.AlertImageRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.AlertRepository;
 import com.ayushsingh.cacmp_backend.services.AlertService;
+import com.ayushsingh.cacmp_backend.util.driveUtil.FileService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import com.ayushsingh.cacmp_backend.util.imageUtil.ImageService;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,7 @@ public class AlertServiceImpl implements AlertService {
     private final AlertImageRepository alertImageRepository;
     private final AlertDocumentRepository alertDocumentRepository;
     private final ImageService imageService;
+    private final FileService fileService;
     @Override
     public String createAlert(AlertCreateDto alertCreateDto) {
         Alert alert=new Alert();
@@ -78,5 +81,22 @@ public class AlertServiceImpl implements AlertService {
     public String updateStatus(AlertStatusDto alertStatusDto) {
         alertRepository.updateStatus(alertStatusDto.getAlertToken(),alertStatusDto.getPublishStatus());
         return alertStatusDto.getAlertToken();
+    }
+
+    @Transactional
+    @Override
+    public String uploadFile(String alertToken, MultipartFile[] multipartFiles) {
+        Alert alert=alertRepository.findByAlertToken(alertToken).orElseThrow(()->new ApiException("Alert not found!"));
+        for(MultipartFile file: multipartFiles){
+            UploadedFileDto fileDto=fileService.uploadFile(file);
+            AlertDocument alertDocument=new AlertDocument();
+            alertDocument.setDocumentName(fileDto.getFileName());
+            alertDocument.setDocumentUrl(fileDto.getFileUrl());
+            alertDocument.setFormat(fileDto.getFileExtension());
+            alertDocument.setDocumentToken(fileDto.getFileId());
+            alertDocument.setAlert(alert);
+            alertRepository.save(alert);
+        }
+        return alert.getAlertToken();
     }
 }

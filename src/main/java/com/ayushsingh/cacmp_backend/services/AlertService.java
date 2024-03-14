@@ -14,4 +14,6 @@ public interface AlertService {
     String saveAlertImages(String token, MultipartFile[] images);
 
     String updateStatus(AlertStatusDto alertStatusDto);
+
+    String uploadFile(String alertToken, MultipartFile[] multipartFiles);
 }

@@ -53,7 +53,7 @@ public class Category {
     private Department department;
 
     @OneToMany(mappedBy = "category",fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    private Set<Complaint> complaints = new HashSet<Complaint>();
+    private Set<Complaint> complaints = new HashSet<>();
 
 
     @CreatedDate
