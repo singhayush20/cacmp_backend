@@ -13,12 +13,5 @@ public enum PublishStatus {
         this.value = value;
     }
 
-    public static PublishStatus fromValue(String value) {
-        for (PublishStatus status: values()) {
-            if (status.getValue().equalsIgnoreCase(value)) {
-                return status;
-            }
-        }
-        throw new ApiException("No enum constant with value: " + value);
-    }
+
 }

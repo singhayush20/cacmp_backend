@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlertStatusDto {
+public class StatusUpdateDto {
 
-    private String alertToken;
+    private String token;
     private PublishStatus publishStatus;
 }

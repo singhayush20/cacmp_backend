@@ -20,29 +20,56 @@ public class CloudinaryImageServiceImpl implements ImageService {
 
 
     @Override
-    public Map<String,Object> uploadComplaintImage(MultipartFile file) {
+    public Map<String, Object> uploadComplaintImage (MultipartFile file) {
 
         try {
             log.info("Uploading file to cloudinary...");
-            Map<String,Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of());
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), Map.of());
             log.info("Upload result: {}", uploadResult);
             return uploadResult;
-        }
-        catch (IOException e){
-            throw  new ApiException("Error uploading the complaint image");
+        } catch (IOException e) {
+            throw new ApiException("Error uploading the complaint image");
         }
     }
 
     @Override
-    public Map<String, Object> uploadAlertImage(MultipartFile file) {
-        try{
+    public Map<String, Object> uploadAlertImage (MultipartFile file) {
+        try {
             log.info("Uploading alert image...");
             Map<String, Object> uploadOptions = new HashMap<>();
             uploadOptions.put("folder", "Alert Images");
-            return (Map<String,Object>) cloudinary.uploader().upload(file, uploadOptions);
+            uploadOptions.put("display_name",file.getOriginalFilename());
+            return (Map<String, Object>) cloudinary.uploader().upload(file, uploadOptions);
+        } catch (IOException e) {
+            throw new ApiException("Error uploading the alert image");
         }
-        catch(IOException e){
-            throw  new ApiException("Error uploading the alert image");
+    }
+
+    @Override
+    public Map<String, Object> uploadArticleImage (MultipartFile file) {
+        try {
+            log.info("Uploading article image...");
+            Map<String, Object> uploadOptions = new HashMap<>();
+            uploadOptions.put("folder", "Article Images");
+            uploadOptions.put("display_name",file.getOriginalFilename());
+           return (Map<String, Object>) cloudinary.uploader().upload(file, uploadOptions);
+
+        } catch (IOException e) {
+            throw new ApiException("Error uploading the article image");
+        }
+    }
+
+    @Override
+    public Map<String, Object> uploadArticleVideo (MultipartFile file) {
+        try {
+            log.info("Uploading article image...");
+            Map<String, Object> uploadOptions = new HashMap<>();
+            uploadOptions.put("folder", "Article Videos");
+            uploadOptions.put("display_name",file.getOriginalFilename());
+            return (Map<String, Object>) cloudinary.uploader().upload(file, uploadOptions);
+
+        } catch (IOException e) {
+            throw new ApiException("Error uploading the article video");
         }
     }
 }

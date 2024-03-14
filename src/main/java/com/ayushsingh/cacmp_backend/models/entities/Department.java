@@ -63,6 +63,11 @@ public class Department {
             CascadeType.REFRESH }, orphanRemoval = true)
    private Set<Poll> polls=new HashSet<>();
 
+    @OneToMany(mappedBy = "department",fetch = FetchType.LAZY,cascade = { CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH }, orphanRemoval = true)
+    private Set<Article> articles=new HashSet<>();
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "departments_department_role", joinColumns = @JoinColumn(name = "department_id", referencedColumnName = "department_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     private Set<DepartmentRole> roles;

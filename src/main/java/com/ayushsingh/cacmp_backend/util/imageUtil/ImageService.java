@@ -9,4 +9,8 @@ public interface ImageService {
      Map<String,Object> uploadComplaintImage(MultipartFile file);
 
      Map<String,Object> uploadAlertImage(MultipartFile file);
+
+     Map<String,Object> uploadArticleImage(MultipartFile file);
+
+     Map<String,Object> uploadArticleVideo(MultipartFile file);
 }

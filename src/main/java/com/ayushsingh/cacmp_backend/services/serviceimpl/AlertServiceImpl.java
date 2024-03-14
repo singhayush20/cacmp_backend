@@ -3,7 +3,7 @@ package com.ayushsingh.cacmp_backend.services.serviceimpl;
 import com.ayushsingh.cacmp_backend.models.constants.PublishStatus;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertDetailsDto;
-import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertStatusDto;
+import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.StatusUpdateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.driveFileDtos.UploadedFileDto;
 import com.ayushsingh.cacmp_backend.models.entities.Alert;
 import com.ayushsingh.cacmp_backend.models.entities.AlertDocument;
@@ -66,7 +66,7 @@ public class AlertServiceImpl implements AlertService {
         for (MultipartFile image : images) {
             Map<String, Object> uploadResult = imageService.uploadAlertImage(image);
             AlertImage alertImage = new AlertImage();
-            alertImage.setImageUrl((String) uploadResult.get("secure_url"));
+            alertImage.setImageUrl((String) uploadResult.get("public_url"));
             alertImage.setPublicId((String) uploadResult.get("public_id"));
             alertImage.setAssetId((String) uploadResult.get("asset_id"));
             alertImage.setSignature((String) uploadResult.get("signature"));
@@ -78,9 +78,9 @@ public class AlertServiceImpl implements AlertService {
 
     @Transactional
     @Override
-    public String updateStatus(AlertStatusDto alertStatusDto) {
-        alertRepository.updateStatus(alertStatusDto.getAlertToken(),alertStatusDto.getPublishStatus());
-        return alertStatusDto.getAlertToken();
+    public String updateStatus(StatusUpdateDto statusUpdateDto) {
+        alertRepository.updateStatus(statusUpdateDto.getToken(), statusUpdateDto.getPublishStatus());
+        return statusUpdateDto.getToken();
     }
 
     @Transactional

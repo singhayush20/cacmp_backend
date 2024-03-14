@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.entities;
 
+import com.ayushsingh.cacmp_backend.models.constants.ArticleMediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,31 +19,36 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="alert_documents")
+@Table(name="article_media")
 @Entity
-public class AlertDocument {
+public class ArticleMedia {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="document_id")
-    private Long documentId;
+    @Column(name="article_media_id")
+    private String mediaId;
 
-    @Column(name="alert_token",nullable = false,unique = true)
-    private String documentToken;
+    @Column(name="media_token",nullable = false)
+    private String mediaToken;
 
-    @Column(name="document_name",nullable = false)
-    private String documentName;
+    @Column(name="media_type")
+    @Enumerated(EnumType.STRING)
+    private ArticleMediaType mediaType;
 
     @Column(name="format",nullable = false)
     private String format;
 
-    @Column(name="document_url",nullable = false)
-    private String documentUrl;
+    @Column(name="file_name",nullable = false)
+    private String fileName;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="alert_id",referencedColumnName = "alert_id")
-    private Alert alert;
+    @Column(name="url",nullable = false)
+    private String url;
 
+
+    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinColumn(name="article_id",referencedColumnName = "article_id")
+    private Article article;
 
     @CreatedDate
     @CreationTimestamp
@@ -56,21 +62,19 @@ public class AlertDocument {
 
     @PrePersist
     protected void setToken() {
-        documentToken = UUID.randomUUID().toString();
+        mediaToken = UUID.randomUUID().toString();
     }
 
-
-
     @Override
-    public boolean equals(Object o) {
+    public boolean equals (Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AlertDocument that = (AlertDocument) o;
-        return Objects.equals(documentUrl, that.documentUrl);
+        ArticleMedia that = (ArticleMedia) o;
+        return Objects.equals(mediaToken, that.mediaToken);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(documentUrl);
+    public int hashCode () {
+        return Objects.hash(mediaToken);
     }
 }

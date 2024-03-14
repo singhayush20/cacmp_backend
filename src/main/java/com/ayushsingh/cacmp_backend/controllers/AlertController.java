@@ -2,7 +2,7 @@ package com.ayushsingh.cacmp_backend.controllers;
 
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertDetailsDto;
-import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertStatusDto;
+import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.StatusUpdateDto;
 import com.ayushsingh.cacmp_backend.services.AlertService;
 import com.ayushsingh.cacmp_backend.util.responseUtil.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,25 +26,25 @@ public class AlertController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<AlertDetailsDto>> getAlertDetails(@RequestParam String token) {
+    public ResponseEntity<ApiResponse<AlertDetailsDto>> getAlertDetails(@RequestParam("token") String token) {
         AlertDetailsDto alertDetailsDto = this.alertService.getAlertDetails(token);
         return new ResponseEntity<>(new ApiResponse<>(alertDetailsDto), HttpStatus.OK);
     }
 
     @PostMapping("/upload/image")
-    public ResponseEntity<ApiResponse<String>> saveAlertImages(@RequestParam String token, @RequestParam MultipartFile[] images) {
+    public ResponseEntity<ApiResponse<String>> saveAlertImages(@RequestParam("token") String token, @RequestPart("images") MultipartFile[] images) {
         return new ResponseEntity<>(new ApiResponse<>(this.alertService.saveAlertImages(token, images)), HttpStatus.CREATED);
     }
 
     @PostMapping("/upload/file")
-    public ResponseEntity<ApiResponse<String>> saveAlertFiles(@RequestParam("alertToken") String token, @RequestPart("file") MultipartFile[] files) {
+    public ResponseEntity<ApiResponse<String>> saveAlertFiles(@RequestParam("token") String token, @RequestPart("file") MultipartFile[] files) {
         String alertToken=alertService.saveAlertImages(token,files);
         return new ResponseEntity<>(new ApiResponse<>(alertToken),HttpStatus.OK);
     }
 
     @PutMapping("/update-status")
-    public ResponseEntity<ApiResponse<String>> updateStatus(@RequestBody AlertStatusDto alertStatusDto) {
-        return new ResponseEntity<>(new ApiResponse<>(this.alertService.updateStatus(alertStatusDto)), HttpStatus.OK);
+    public ResponseEntity<ApiResponse<String>> updateStatus(@RequestBody StatusUpdateDto statusUpdateDto) {
+        return new ResponseEntity<>(new ApiResponse<>(this.alertService.updateStatus(statusUpdateDto)), HttpStatus.OK);
     }
 
 
