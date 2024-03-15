@@ -17,6 +17,8 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name="article")
 public class Article {
 
     @Id

@@ -15,18 +15,18 @@ import java.util.Optional;
 
 public interface PollRepository extends JpaRepository<Poll, Long>, JpaSpecificationExecutor<Poll>{
 
-    @Query("SELECT p FROM Poll p WHERE p.pollToken = :?1")
+    @Query("SELECT p FROM Poll p WHERE p.pollToken = :token")
     Optional<Poll> findByToken(@Param("token") String token);
 
-    @Query("SELECT p.isLive FROM Poll p WHERE p.pollToken = :?1")
-    Boolean findIfPollActive(String pollToken);
+    @Query("SELECT p.isLive FROM Poll p WHERE p.pollToken = :pollToken")
+    Boolean findIfPollActive(@Param("pollToken") String pollToken);
 
 
     @Query("""
             SELECT p.pollToken as pollToken,
             p.subject as subject,
             p.description as description,
-            p.department.departmentToken as deptToken,
+            p.department.deptToken as deptToken,
             p.department.departmentName as departmentName
             FROM Poll p
             WHERE p.isLive = true
@@ -44,8 +44,9 @@ public interface PollRepository extends JpaRepository<Poll, Long>, JpaSpecificat
     Map<String, String> getDeptNameAndToken(@Param("pollToken") String pollToken);
 
     @Modifying
-    @Query("UPDATE Poll p SET p.isLive = :?1 WHERE p.pollToken = :?2")
-    void changeLiveStatus(String pollToken, Boolean isLive);
+    @Query("UPDATE Poll p SET p.isLive = :isLive WHERE p.pollToken = :pollToken")
+    void changeLiveStatus(@Param("pollToken") String pollToken, @Param("isLive") Boolean isLive);
+
 
 
 }

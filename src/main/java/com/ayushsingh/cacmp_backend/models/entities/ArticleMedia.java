@@ -27,7 +27,7 @@ public class ArticleMedia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="article_media_id")
-    private String mediaId;
+    private Long mediaId;
 
     @Column(name="media_token",nullable = false)
     private String mediaToken;

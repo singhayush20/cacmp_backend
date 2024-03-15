@@ -20,6 +20,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name="poll")
 public class Poll {
 
     @Id
