@@ -14,4 +14,5 @@ public class PollChoiceDetailsDto {
     private String choiceToken;
     private String choiceName;
     private Long voteCount;
+    private Integer sequenceNo;
 }

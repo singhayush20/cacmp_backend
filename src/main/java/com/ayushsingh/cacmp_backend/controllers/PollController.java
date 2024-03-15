@@ -1,8 +1,6 @@
 package com.ayushsingh.cacmp_backend.controllers;
 
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollCreateDto;
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollDetailsDto;
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollListDto;
+import com.ayushsingh.cacmp_backend.models.dtos.pollDto.*;
 import com.ayushsingh.cacmp_backend.models.projections.poll.PollListProjection;
 import com.ayushsingh.cacmp_backend.repository.filterDto.PollFilter;
 import com.ayushsingh.cacmp_backend.services.PollService;
@@ -31,11 +29,9 @@ public class PollController {
     }
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
-    @PutMapping("/poll-status")
-    public ResponseEntity<ApiResponse<String>> changeLiveStatus (@RequestParam String pollToken,
-                                                                 @RequestParam Boolean isLive) {
-        return ResponseEntity.ok(new ApiResponse<>(pollService.changeLiveStatus(pollToken,
-                isLive)));
+    @PutMapping("/status")
+    public ResponseEntity<ApiResponse<String>> changeLiveStatus (@RequestBody PollStatusDto pollStatusDto) {
+        return ResponseEntity.ok(new ApiResponse<>(pollService.changeLiveStatus(pollStatusDto)));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
@@ -45,27 +41,31 @@ public class PollController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_DEPARTMENT')")
-    @GetMapping("/poll-details")
-    public ResponseEntity<ApiResponse<PollDetailsDto>> getPollDetails (@RequestParam String pollToken) {
+    @GetMapping("/details")
+    public ResponseEntity<ApiResponse<PollDetailsDto>> getPollDetails (@RequestParam("token") String pollToken) {
         return ResponseEntity.ok(new ApiResponse<>(pollService.getPollDetails(pollToken)));
     }
 
     @PreAuthorize("hasRole('ROLE_RESIDENT')")
     @PutMapping("/cast-vote")
-    public ResponseEntity<ApiResponse<String>> castVote (@RequestParam String pollToken,
-                                                         @RequestParam String choiceToken) {
-        return ResponseEntity.ok(new ApiResponse<>(pollService.castVote(pollToken, choiceToken)));
+    public ResponseEntity<ApiResponse<String>> castVote (@RequestBody VoteDto voteDto) {
+        return ResponseEntity.ok(new ApiResponse<>(pollService.castVote(voteDto)));
     }
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
-    @GetMapping("/list-polls-by-dept")
-    public ResponseEntity<List<PollListDto>> getPollsByDepartment (@RequestParam String deptToken
-            , @RequestParam(required = false) Boolean isLive, @RequestParam(required = false) String sortBy) {
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<PollListDto>>> getPollsByDepartment (@RequestParam("token") String deptToken
+            , @RequestParam(value="isLive",required = false) Boolean isLive, @RequestParam(value = "sortBy",required = false) String sortBy) {
         PollFilter pollFilter = new PollFilter();
         pollFilter.setDeptToken(deptToken);
         pollFilter.setIsLive(isLive);
         Sort sort = sortBy != null ? Sort.by(sortBy) : Sort.by("createdAt");
         sort = sort.descending();
-        return ResponseEntity.ok(pollService.listPollsByDept(pollFilter, sort));
+        return ResponseEntity.ok(new ApiResponse<>(pollService.listPollsByDept(pollFilter, sort)));
+    }
+
+    @DeleteMapping("/{pollToken}")
+    public ResponseEntity<ApiResponse<String>> deletePoll (@PathVariable String pollToken) {
+        return ResponseEntity.ok(new ApiResponse<>(pollService.deletePoll(pollToken)));
     }
 }

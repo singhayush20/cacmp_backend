@@ -11,10 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -42,7 +39,7 @@ public class Poll {
     @JoinColumn(name = "department_id", referencedColumnName = "department_id")
     private Department department;
 
-    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PollChoice> choices = new HashSet<>();
 
     @CreatedDate
@@ -55,13 +52,33 @@ public class Poll {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Column(name = "is_live", columnDefinition = "boolean default false")
+    @Column(name = "is_live", nullable = false)
     private Boolean isLive;
+
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Vote> votes = new HashSet<>();
 
     @PrePersist
     public void generateToken() {
         if (this.pollToken == null) {
             this.pollToken = UUID.randomUUID().toString();
+            this.isLive=false;
         }
+    }
+
+
+
+
+    @Override
+    public boolean equals (Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Poll poll = (Poll) o;
+        return Objects.equals(pollToken, poll.pollToken);
+    }
+
+    @Override
+    public int hashCode () {
+        return Objects.hash(pollToken);
     }
 }

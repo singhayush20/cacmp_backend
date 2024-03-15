@@ -1,16 +1,9 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollChoiceDetailsDto;
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollCreateDto;
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollDetailsDto;
-import com.ayushsingh.cacmp_backend.models.dtos.pollDto.PollListDto;
-import com.ayushsingh.cacmp_backend.models.entities.Department;
-import com.ayushsingh.cacmp_backend.models.entities.Poll;
-import com.ayushsingh.cacmp_backend.models.entities.PollChoice;
+import com.ayushsingh.cacmp_backend.models.dtos.pollDto.*;
+import com.ayushsingh.cacmp_backend.models.entities.*;
 import com.ayushsingh.cacmp_backend.models.projections.poll.PollListProjection;
-import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
-import com.ayushsingh.cacmp_backend.repository.entities.PollChoiceRepository;
-import com.ayushsingh.cacmp_backend.repository.entities.PollRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.*;
 import com.ayushsingh.cacmp_backend.repository.filterDto.PollFilter;
 import com.ayushsingh.cacmp_backend.repository.specifications.poll.PollSpecification;
 import com.ayushsingh.cacmp_backend.services.PollService;
@@ -31,6 +24,8 @@ public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
     private final DepartmentRepository departmentRepository;
     private final PollChoiceRepository pollChoiceRepository;
+    private final VoteRepository voteRepository;
+    private final ConsumerRepository consumerRepository;
 
     @Transactional
     @Override
@@ -39,25 +34,48 @@ public class PollServiceImpl implements PollService {
         Poll poll = new Poll();
         poll.setDepartment(department);
         poll.setDescription(pollCreateDto.getDescription());
-        poll.setSubject(poll.getSubject());
+        poll.setSubject(pollCreateDto.getSubject());
         Set<PollChoice> pollChoices = new HashSet<>();
+        int sequenceNo=1;
         for (String pollChoice : pollCreateDto.getPollChoices()) {
             PollChoice choice = new PollChoice();
             choice.setChoiceName(pollChoice);
             choice.setPoll(poll);
+            choice.setSequenceNo(sequenceNo++);
             pollChoices.add(choice);
         }
         poll.setChoices(pollChoices);
         return pollRepository.save(poll).getPollToken();
     }
 
+    @Transactional
     @Override
-    public String castVote(String pollToken, String choiceToken) {
+    public String deletePoll (String pollToken) {
         Boolean isPollActive = pollRepository.findIfPollActive(pollToken);
-        if (isPollActive) {
-            pollChoiceRepository.addVote(choiceToken);
+        if (!isPollActive) {
+            Poll poll=pollRepository.findByToken(pollToken).orElseThrow(() -> new ApiException("Poll not found"));
+            pollRepository.delete(poll);
+        }
+        else{
+            throw new ApiException("Poll cannot be deleted as it is live");
         }
         return pollToken;
+    }
+
+    @Transactional
+    @Override
+    public String castVote(VoteDto voteDto) {
+        Poll poll=this.pollRepository.findByToken(voteDto.getPollToken()).orElseThrow(() -> new ApiException("Poll not found"));
+        if(!poll.getIsLive()){
+            throw new ApiException("Poll is not live. Therefore, vote cannot be cast!");
+        }
+        Consumer consumer=this.consumerRepository.findByConsumerToken(voteDto.getConsumerToken()).orElseThrow(() -> new ApiException("Consumer not found"));
+        Vote vote=new Vote();
+        vote.setConsumer(consumer);
+        vote.setPoll(poll);
+        vote=voteRepository.save(vote);
+        pollChoiceRepository.addVote(voteDto.getPollChoiceToken());
+        return vote.getVoteToken();
     }
 
     @Override
@@ -70,11 +88,13 @@ public class PollServiceImpl implements PollService {
         Map<String,String> departmentDetails=pollRepository.getDeptNameAndToken(pollToken);
         pollDetailsDto.setDeptToken(departmentDetails.get("deptToken"));
         pollDetailsDto.setDepartmentName(departmentDetails.get("departmentName"));
+        pollDetailsDto.setIsLive(poll.getIsLive());
         pollDetailsDto.setPollChoiceDetails(poll.getChoices().stream().map(pollChoice -> {
             PollChoiceDetailsDto pollChoiceDetailsDto = new PollChoiceDetailsDto();
             pollChoiceDetailsDto.setChoiceToken(pollChoice.getChoiceToken());
             pollChoiceDetailsDto.setChoiceName(pollChoice.getChoiceName());
             pollChoiceDetailsDto.setVoteCount(pollChoice.getVoteCount());
+            pollChoiceDetailsDto.setSequenceNo(pollChoice.getSequenceNo());
             return pollChoiceDetailsDto;
         }).collect(Collectors.toList()));
         return pollDetailsDto;
@@ -87,9 +107,9 @@ public class PollServiceImpl implements PollService {
 
     @Transactional
     @Override
-    public String changeLiveStatus(String pollToken, Boolean isLive) {
-        this.pollRepository.changeLiveStatus(pollToken, isLive);
-        return pollToken;
+    public String changeLiveStatus(PollStatusDto pollStatusDto) {
+        this.pollRepository.changeLiveStatus(pollStatusDto.getToken(),pollStatusDto.getStatus());
+        return pollStatusDto.getToken();
     }
 
     @Override
@@ -101,6 +121,9 @@ public class PollServiceImpl implements PollService {
             PollListDto pollListDto = new PollListDto();
             pollListDto.setPollToken(poll.getPollToken());
             pollListDto.setSubject(poll.getSubject());
+            pollListDto.setDescription(poll.getDescription());
+            pollListDto.setIsLive(poll.getIsLive());
+            pollListDto.setCreatedOn(poll.getCreatedAt());
             polls.add(pollListDto);
         });
         return polls;

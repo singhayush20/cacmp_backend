@@ -8,6 +8,7 @@ import com.ayushsingh.cacmp_backend.models.roles.DepartmentRole;
 import com.ayushsingh.cacmp_backend.repository.entities.CategoryRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.ComplaintRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.PollRepository;
 import com.ayushsingh.cacmp_backend.services.DepartmentRoleService;
 import com.ayushsingh.cacmp_backend.services.DepartmentService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
@@ -27,6 +28,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
+
+    private final PollRepository pollRepository;
 
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
@@ -81,6 +84,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void deleteDepartment(String departmentToken) {
         Long count=categoryRepository.getCategoryCountByDepartmentUsername(departmentToken);
+        Long countPolls=pollRepository.countByDepartmentToken(departmentToken);
         if(count!=0){
             throw new ApiException("Department cannot be deleted because there are categories associated with it");
         }

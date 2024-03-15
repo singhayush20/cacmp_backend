@@ -63,6 +63,9 @@ public class Consumer {
     @JoinColumn(name = "address_id", referencedColumnName = "address_id")
     private ConsumerAddress address;
 
+    @OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<Vote> votes = new HashSet<>();
+
     @OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Complaint> complaints = new HashSet<Complaint>();
 

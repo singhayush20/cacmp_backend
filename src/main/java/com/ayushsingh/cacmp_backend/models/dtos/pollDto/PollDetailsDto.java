@@ -18,5 +18,6 @@ public class PollDetailsDto {
     private String description;
     private String deptToken;
     private String departmentName;
+    private Boolean isLive;
     private List<PollChoiceDetailsDto> pollChoiceDetails=new ArrayList<>();
 }

@@ -5,16 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PollListDto {
+public class VoteDto {
 
-    String pollToken;
-    String subject;
-    String description;
-    Date createdOn;
-    Boolean isLive;}
+    private String pollChoiceToken;
+    private String pollToken;
+    private String consumerToken;
+
+}
