@@ -32,6 +32,13 @@ public class OtpServiceImpl implements OtpService {
         int otp = 100000 + random.nextInt(900000);
         log.info("Saving generated otp for id: "+email+" otp: "+otp);
         otpCache.put(email, otp);
+        log.info("getting otp: ");
+        try{
+            log.info(otpCache.get(email).toString());
+        }
+        catch(Exception e){
+            log.error("some error occurred");
+        }
         return otp;
     }
 

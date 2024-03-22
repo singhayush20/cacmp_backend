@@ -5,18 +5,10 @@ import com.ayushsingh.cacmp_backend.models.constants.ComplaintStatus;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintListDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.complaintDtos.ComplaintStatusDto;
-import com.ayushsingh.cacmp_backend.models.entities.Category;
-import com.ayushsingh.cacmp_backend.models.entities.Complaint;
-import com.ayushsingh.cacmp_backend.models.entities.ComplaintImage;
-import com.ayushsingh.cacmp_backend.models.entities.ComplaintLocation;
-import com.ayushsingh.cacmp_backend.models.entities.Consumer;
+import com.ayushsingh.cacmp_backend.models.entities.*;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.projections.complaint.ComplaintListDetailsProjection;
-import com.ayushsingh.cacmp_backend.repository.entities.CategoryRepository;
-import com.ayushsingh.cacmp_backend.repository.entities.ComplaintImageRepository;
-import com.ayushsingh.cacmp_backend.repository.entities.ComplaintLocationRepository;
-import com.ayushsingh.cacmp_backend.repository.entities.ComplaintRepository;
-import com.ayushsingh.cacmp_backend.repository.entities.ConsumerRepository;
+import com.ayushsingh.cacmp_backend.repository.entities.*;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ComplaintFilter;
 import com.ayushsingh.cacmp_backend.repository.specifications.complaint.ComplaintSpecification;
 import com.ayushsingh.cacmp_backend.services.ComplaintService;
@@ -41,15 +33,20 @@ import java.util.Optional;
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
+
     private final CategoryRepository categoryRepository;
+
     private final ComplaintImageRepository complaintImageRepository;
+
     private final ImageService imageService;
+
     private final ConsumerRepository consumerRepository;
+
     private final ComplaintLocationRepository complaintLocationRepository;
 
     @Transactional
     @Override
-    public String createNewComplaint(ComplaintCreateDto complaintCreateDto) {
+    public String createNewComplaint (ComplaintCreateDto complaintCreateDto) {
 
         String categoryToken = complaintCreateDto.getCategoryToken();
         Optional<Category> categoryOptional = categoryRepository.findByCategoryToken(categoryToken);
@@ -58,8 +55,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
 
         // load consumer
-        Optional<Consumer> consumerOptional = consumerRepository
-                .findByConsumerToken(complaintCreateDto.getConsumerToken());
+        Optional<Consumer> consumerOptional = consumerRepository.findByConsumerToken(complaintCreateDto.getConsumerToken());
         if (consumerOptional.isEmpty()) {
             throw new RuntimeException("Consumer not found");
         }
@@ -78,89 +74,62 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaint.getComplaintToken();
     }
 
-    private ComplaintLocation saveComplaintLocation(ComplaintCreateDto complaintCreateDto) {
-        ComplaintLocation complaintLocation = new ComplaintLocation();
-        complaintLocation.setAddress(complaintCreateDto.getAddress());
-        complaintLocation.setPincode(complaintCreateDto.getPincode());
-        complaintLocation.setContactNo(complaintCreateDto.getContactNo());
-        complaintLocation.setWardNo(complaintCreateDto.getWardNo());
-        complaintLocationRepository.save(complaintLocation);
-        return complaintLocation;
-    }
-
     @Transactional
     @Override
-    public String changeStatus(ComplaintStatusDto complaintDto) {
+    public String changeStatus (ComplaintStatusDto complaintDto) {
 
-        Complaint complaint = complaintRepository.findByComplaintToken(complaintDto.getComplaintToken()).orElseThrow(()->new ApiException("Complaint with token: "+complaintDto.getComplaintToken()+" not found!"));
-        ComplaintStatus currentStatus=complaint.getComplaintStatus();
+        Complaint complaint =
+                complaintRepository.findByComplaintToken(complaintDto.getComplaintToken()).orElseThrow(() -> new ApiException("Complaint with token: " + complaintDto.getComplaintToken() + " not found!"));
+        ComplaintStatus currentStatus = complaint.getComplaintStatus();
 
         ComplaintStatus newStatus = ComplaintStatus.fromValue(complaintDto.getComplaintStatus());
 
-        if(currentStatus==ComplaintStatus.CLOSED){
+        if (currentStatus == ComplaintStatus.CLOSED) {
             throw new ApiException("This complaint has already been closed!");
-        }
-        else{
+        } else {
             complaint.setComplaintStatus(newStatus);
 
-            if(newStatus==ComplaintStatus.CLOSED){
-               Date currentTime =Date.from(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC));
-               complaint.setClosedAt(currentTime);
+            if (newStatus == ComplaintStatus.CLOSED) {
+                Date currentTime = Date.from(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC));
+                complaint.setClosedAt(currentTime);
             }
             return complaintRepository.save(complaint).getComplaintToken();
         }
     }
 
     @Override
-    public List<ComplaintListDetailsProjection> searchByPincode(Long pincode) {
+    public List<ComplaintListDetailsProjection> searchByPincode (Long pincode) {
         return complaintRepository.findAllByPincode(pincode);
     }
 
     @Override
-    public List<ComplaintListDetailsProjection> searchByWardNo(String wardNo) {
+    public List<ComplaintListDetailsProjection> searchByWardNo (String wardNo) {
         return complaintRepository.findAllByWardNo(wardNo);
     }
 
     @Override
-    public ComplaintDetailsProjection getComplaintDetails(String complaintToken) {
+    public ComplaintDetailsProjection getComplaintDetails (String complaintToken) {
         return complaintRepository.getComplaintDetails(complaintToken);
     }
 
     @Override
-    public List<String> getComplaintImages(String token) {
+    public List<String> getComplaintImages (String token) {
         return complaintImageRepository.getComplaintImages(token);
     }
 
-
-
     @Override
-    public List<ComplaintListDetailsProjection> getAllComplaintsByStatus(String status) {
+    public List<ComplaintListDetailsProjection> getAllComplaintsByStatus (String status) {
         ComplaintStatus complaintStatus = ComplaintStatus.fromValue(status);
         return complaintRepository.getAllComplaintsByStatus(complaintStatus);
     }
 
     @Override
-    public List<ComplaintListDetailsProjection> getAllComplaintsByPriority(String priority) {
+    public List<ComplaintListDetailsProjection> getAllComplaintsByPriority (String priority) {
         ComplaintPriority complaintPriority = ComplaintPriority.fromValue(priority);
         return complaintRepository.getAllComplaintsByPriority(complaintPriority);
     }
 
-
-    private void saveImages(MultipartFile[] images, Complaint complaint) {
-        for (MultipartFile image : images) {
-            Map<String, Object> uploadResult = imageService.uploadComplaintImage(image);
-            ComplaintImage complaintImage = new ComplaintImage();
-            complaintImage.setImageUrl((String) uploadResult.get("secure_url"));
-            complaintImage.setPublicId((String) uploadResult.get("public_id"));
-            complaintImage.setAssetId((String) uploadResult.get("asset_id"));
-            complaintImage.setSignature((String) uploadResult.get("signature"));
-            complaintImage.setComplaint(complaint);
-            complaintImageRepository.save(complaintImage);
-        }
-    }
-
-
-    public List<ComplaintListDetailsDto> getFilteredComplaints(ComplaintFilter complaintFilter, Sort sort) {
+    public List<ComplaintListDetailsDto> getFilteredComplaints (ComplaintFilter complaintFilter, Sort sort) {
         Specification<Complaint> spec = ComplaintSpecification.filterComplaints(complaintFilter);
         List<Complaint> complaints = complaintRepository.findAll(spec, sort);
 
@@ -178,7 +147,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Transactional
     @Override
-    public List<ComplaintListDetailsDto> getComplaintsForConsumer(ComplaintFilter filter, Sort sort) {
+    public List<ComplaintListDetailsDto> getComplaintsForConsumer (ComplaintFilter filter, Sort sort) {
         Specification<Complaint> spec = ComplaintSpecification.filterComplaints(filter);
         List<Complaint> complaints = complaintRepository.findAll(spec, sort);
         return complaints.stream().map(complaint -> {
@@ -194,10 +163,33 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public String saveComplaintImages(String token, MultipartFile[] images) {
+    public String saveComplaintImages (String token, MultipartFile[] images) {
         Complaint complaint = this.complaintRepository.findByComplaintToken(token).orElseThrow(() -> new ApiException("Complaint with token " + token + " not found"));
         saveImages(images, complaint);
         return token;
+    }
+
+    private ComplaintLocation saveComplaintLocation (ComplaintCreateDto complaintCreateDto) {
+        ComplaintLocation complaintLocation = new ComplaintLocation();
+        complaintLocation.setAddress(complaintCreateDto.getAddress());
+        complaintLocation.setPincode(complaintCreateDto.getPincode());
+        complaintLocation.setContactNo(complaintCreateDto.getContactNo());
+        complaintLocation.setWardNo(complaintCreateDto.getWardNo());
+        complaintLocationRepository.save(complaintLocation);
+        return complaintLocation;
+    }
+
+    private void saveImages (MultipartFile[] images, Complaint complaint) {
+        for (MultipartFile image : images) {
+            Map<String, Object> uploadResult = imageService.uploadComplaintImage(image);
+            ComplaintImage complaintImage = new ComplaintImage();
+            complaintImage.setImageUrl((String) uploadResult.get("secure_url"));
+            complaintImage.setPublicId((String) uploadResult.get("public_id"));
+            complaintImage.setAssetId((String) uploadResult.get("asset_id"));
+            complaintImage.setSignature((String) uploadResult.get("signature"));
+            complaintImage.setComplaint(complaint);
+            complaintImageRepository.save(complaintImage);
+        }
     }
 
 

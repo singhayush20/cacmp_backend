@@ -12,4 +12,6 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     Optional<Vote> findByVoteToken(String voteToken);
 
 
+    @Query("SELECT v FROM Vote v WHERE v.consumer.consumerToken = :consumerToken AND v.poll.pollToken = :pollToken")
+    Optional<Vote> isDuplicateVote (String consumerToken, String pollToken);
 }

@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend.models.dtos.pollDto;
+package com.ayushsingh.cacmp_backend.models.dtos.consumerDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class    VoteDto {
+public class OldNewPasswordDtp {
 
-    private String pollChoiceToken;
-    private String pollToken;
+    private String oldPassword;
+    private String newPassword;
     private String consumerToken;
-
 }

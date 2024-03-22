@@ -1,6 +1,8 @@
 package com.ayushsingh.cacmp_backend.services;
 
 import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerDetailsDto;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.OldNewPasswordDtp;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.PasswordChangeDto;
 import com.ayushsingh.cacmp_backend.models.projections.consumer.ConsumerDetailsProjection;
 
 public interface ConsumerService {
@@ -22,4 +24,10 @@ public interface ConsumerService {
     void sendPhoneVerificationOTP(Long phone);
 
     void verifyPhoneOTP(Long phone, Integer otp);
+
+    String sendPasswordResetOTP (String email, Long phone);
+
+    String changePassword(PasswordChangeDto passwordChangeDto);
+
+    String changePassword(OldNewPasswordDtp passwordDto)
 }

@@ -27,7 +27,8 @@ public interface PollRepository extends JpaRepository<Poll, Long>, JpaSpecificat
             p.subject as subject,
             p.description as description,
             p.department.deptToken as deptToken,
-            p.department.departmentName as departmentName
+            p.department.departmentName as departmentName,
+            p.liveOn as liveOn
             FROM Poll p
             WHERE p.isLive = true
             ORDER BY p.createdAt DESC

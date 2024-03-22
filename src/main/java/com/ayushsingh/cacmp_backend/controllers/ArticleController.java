@@ -6,7 +6,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleListDto;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ArticleFilter;
-import com.ayushsingh.cacmp_backend.repository.filterDto.ArticlePaginationDto;
+import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
 import com.ayushsingh.cacmp_backend.services.ArticleService;
 import com.ayushsingh.cacmp_backend.util.responseUtil.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -60,8 +60,8 @@ public class ArticleController {
 
     @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @GetMapping("/feed")
-    public ResponseEntity<ApiResponse<List<ArticleDetailsDto>>> getArticlesList(@RequestBody ArticlePaginationDto articlePaginationDto) {
-        List<ArticleDetailsDto> articleDetailsDto = articleService.getArticlesList(articlePaginationDto);
+    public ResponseEntity<ApiResponse<List<ArticleDetailsDto>>> getArticlesList(@RequestBody PaginationDto paginationDto) {
+        List<ArticleDetailsDto> articleDetailsDto = articleService.getArticlesList(paginationDto);
         return new ResponseEntity<>(new ApiResponse<>(articleDetailsDto), HttpStatus.OK);
     }
 

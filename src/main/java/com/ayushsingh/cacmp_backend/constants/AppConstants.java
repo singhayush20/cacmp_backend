@@ -5,9 +5,13 @@ public class AppConstants {
     public static final Integer SUCCESS_CODE = 2000;
     public static final Integer ERROR_CODE = 2002;
     public static final Integer ACCESS_DENIED_CODE = 2001;
+
+    public static final Integer DUPLICATE_VOTE_CODE=2005;
     public static final String SUCCESS_MESSAGE = "Success";
     public static final String ERROR_RESPONSE = "Error";
     public static final String ACCESS_DENIED_MESSAGE = "Failure";
+
+    public static final String DUPLICATE_VOTE_MESSAGE="Duplicate Vote!";
 
     public static final Integer ACCESS_TOKEN_EXPIRED=2003;
     public static final Integer REFRESH_TOKEN_EXPIRED=2004;

@@ -8,6 +8,7 @@ import com.ayushsingh.cacmp_backend.repository.filterDto.PollFilter;
 import com.ayushsingh.cacmp_backend.repository.specifications.poll.PollSpecification;
 import com.ayushsingh.cacmp_backend.services.PollService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
+import com.ayushsingh.cacmp_backend.util.exceptionUtil.DuplicateVoteException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -65,6 +66,10 @@ public class PollServiceImpl implements PollService {
     @Transactional
     @Override
     public String castVote(VoteDto voteDto) {
+        Optional<Vote> isDuplicateVote=voteRepository.isDuplicateVote(voteDto.getConsumerToken(),voteDto.getPollToken());
+        if(isDuplicateVote.isPresent()){
+            throw new DuplicateVoteException("User has already voted!");
+        }
         Poll poll=this.pollRepository.findByToken(voteDto.getPollToken()).orElseThrow(() -> new ApiException("Poll not found"));
         if(!poll.getIsLive()){
             throw new ApiException("Poll is not live. Therefore, vote cannot be cast!");
@@ -89,7 +94,9 @@ public class PollServiceImpl implements PollService {
         pollDetailsDto.setDeptToken(departmentDetails.get("deptToken"));
         pollDetailsDto.setDepartmentName(departmentDetails.get("departmentName"));
         pollDetailsDto.setIsLive(poll.getIsLive());
-        pollDetailsDto.setPollChoiceDetails(poll.getChoices().stream().map(pollChoice -> {
+        pollDetailsDto.setLiveOn(poll.getLiveOn());
+        List<PollChoice> pollChoices=this.pollChoiceRepository.findAllByPollToken(poll.getPollToken());
+        pollDetailsDto.setPollChoiceDetails(pollChoices.stream().map(pollChoice -> {
             PollChoiceDetailsDto pollChoiceDetailsDto = new PollChoiceDetailsDto();
             pollChoiceDetailsDto.setChoiceToken(pollChoice.getChoiceToken());
             pollChoiceDetailsDto.setChoiceName(pollChoice.getChoiceName());
@@ -108,7 +115,15 @@ public class PollServiceImpl implements PollService {
     @Transactional
     @Override
     public String changeLiveStatus(PollStatusDto pollStatusDto) {
-        this.pollRepository.changeLiveStatus(pollStatusDto.getToken(),pollStatusDto.getStatus());
+        Poll poll=this.pollRepository.findByToken(pollStatusDto.getToken()).orElseThrow(() -> new ApiException("Poll not found"));
+        if(pollStatusDto.getStatus()==poll.getIsLive()){
+            throw new ApiException("Current and new status cannot be same!");
+        }
+        if(pollStatusDto.getStatus()){
+            poll.setLiveOn(new Date());
+        }
+        poll.setIsLive(pollStatusDto.getStatus());
+        pollRepository.save(poll);
         return pollStatusDto.getToken();
     }
 
@@ -124,6 +139,7 @@ public class PollServiceImpl implements PollService {
             pollListDto.setDescription(poll.getDescription());
             pollListDto.setIsLive(poll.getIsLive());
             pollListDto.setCreatedOn(poll.getCreatedAt());
+            pollListDto.setLiveOn(poll.getLiveOn());
             polls.add(pollListDto);
         });
         return polls;

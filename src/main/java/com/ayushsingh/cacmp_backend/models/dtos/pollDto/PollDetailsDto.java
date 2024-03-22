@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,5 +20,6 @@ public class PollDetailsDto {
     private String deptToken;
     private String departmentName;
     private Boolean isLive;
+    private Date liveOn;
     private List<PollChoiceDetailsDto> pollChoiceDetails=new ArrayList<>();
 }

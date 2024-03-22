@@ -5,7 +5,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleListDto;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ArticleFilter;
-import com.ayushsingh.cacmp_backend.repository.filterDto.ArticlePaginationDto;
+import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +23,7 @@ public interface ArticleService {
 
     ArticleDetailsDto getArticleDetails(String articleToken);
 
-    List<ArticleDetailsDto> getArticlesList(ArticlePaginationDto articlePaginationDto);
+    List<ArticleDetailsDto> getArticlesList(PaginationDto paginationDto);
 
     List<ArticleListDto> getArticlesListByDepartment(ArticleFilter articleFilter, Sort sort);
 }

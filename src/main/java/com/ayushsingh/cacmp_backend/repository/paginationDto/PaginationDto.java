@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend.repository.filterDto;
+package com.ayushsingh.cacmp_backend.repository.paginationDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticlePaginationDto {
+public class PaginationDto {
     private Integer pageNumber;
     private Integer pageSize;
     private String sortBy;

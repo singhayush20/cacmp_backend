@@ -55,6 +55,9 @@ public class Poll {
     @Column(name = "is_live", nullable = false)
     private Boolean isLive;
 
+    @Column(name = "live_on")
+    private Date liveOn;
+
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Vote> votes = new HashSet<>();
 

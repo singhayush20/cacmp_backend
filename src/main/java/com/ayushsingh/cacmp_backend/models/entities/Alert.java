@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.models.entities;
 
+import com.ayushsingh.cacmp_backend.models.constants.AlertInputType;
 import com.ayushsingh.cacmp_backend.models.constants.PublishStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,12 +14,12 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.*;
 
-@Table(name="alert")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="alert")
 public class Alert {
 
     @Id
@@ -35,11 +36,19 @@ public class Alert {
     @Column(name="message",length = 600)
     private String message;
 
+    @Column(name="inputType",nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private AlertInputType inputType;
+
     @OneToMany(mappedBy = "alert", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<AlertImage> alertImages = new HashSet<>();
 
     @OneToMany(mappedBy = "alert", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<AlertDocument> alertDocuments = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
+    @JoinColumn(name = "department_id", referencedColumnName = "department_id")
+    private Department department;
 
     @Column(name="status",nullable = false)
     @Enumerated(value = EnumType.STRING)

@@ -17,4 +17,6 @@ public class PollListDto {
     String subject;
     String description;
     Date createdOn;
-    Boolean isLive;}
+    Date liveOn;
+    Boolean isLive;
+}

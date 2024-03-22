@@ -1,9 +1,12 @@
 package com.ayushsingh.cacmp_backend.services;
 
-import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertCreateDto;
-import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.AlertDetailsDto;
-import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.StatusUpdateDto;
+import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.*;
+import com.ayushsingh.cacmp_backend.repository.filterDto.AlertFilter;
+import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface AlertService {
 
@@ -15,5 +18,10 @@ public interface AlertService {
 
     String updateStatus(StatusUpdateDto statusUpdateDto);
 
-    String uploadFile(String alertToken, MultipartFile[] multipartFiles);
+    String uploadFiles (String alertToken, MultipartFile[] multipartFiles);
+
+    List<AlertDeptListDto> listAlertsByDepartment(AlertFilter alertFilter, Sort sort);
+
+    List<AlertFeedDto> getAlertFeed(PaginationDto pageDto);
+
 }

@@ -39,9 +39,10 @@ public class CloudinaryImageServiceImpl implements ImageService {
             Map<String, Object> uploadOptions = new HashMap<>();
             uploadOptions.put("folder", "Alert Images");
             uploadOptions.put("display_name",file.getOriginalFilename());
-            return (Map<String, Object>) cloudinary.uploader().upload(file, uploadOptions);
+            return (Map<String, Object>) cloudinary.uploader().upload(file.getBytes(), uploadOptions);
         } catch (IOException e) {
-            throw new ApiException("Error uploading the alert image");
+            e.printStackTrace();
+            throw new ApiException("Error uploading the alert image: "+e.getMessage());
         }
     }
 

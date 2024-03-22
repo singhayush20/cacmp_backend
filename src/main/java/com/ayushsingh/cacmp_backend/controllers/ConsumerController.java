@@ -5,6 +5,8 @@ import com.ayushsingh.cacmp_backend.constants.AppConstants;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
 import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.ConsumerDetailsDto;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.OldNewPasswordDtp;
+import com.ayushsingh.cacmp_backend.models.dtos.consumerDtos.PasswordChangeDto;
 import com.ayushsingh.cacmp_backend.models.projections.consumer.ConsumerDetailsProjection;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import com.ayushsingh.cacmp_backend.services.ConsumerService;
@@ -79,6 +81,12 @@ public class ConsumerController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_RESIDENT', 'ROLE_NON_RESIDENT')")
+    @GetMapping("/check-token")
+    public ResponseEntity<ApiResponse<String>> checkToken(){
+        return new ResponseEntity<>(new ApiResponse<>("Token is valid"),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT', 'ROLE_NON_RESIDENT')")
     @PutMapping("")
     public ResponseEntity<ApiResponse<String>> updateConsumer(@RequestBody ConsumerDetailsDto consumerDto,@RequestParam("token") String userToken){
         String token=consumerService.updateConsumer(consumerDto, userToken);
@@ -114,5 +122,24 @@ public class ConsumerController {
     public ResponseEntity<ApiResponse<String>> verifyPhone(@RequestParam("phone") Long phone,@RequestParam("otp") int otp){
         consumerService.verifyPhoneOTP(phone,otp);
         return new ResponseEntity<>(new ApiResponse<>("Phone verified successfully"),HttpStatus.OK);
+    }
+
+    @GetMapping("/password/forget")
+    public ResponseEntity<ApiResponse<String>> sendOTP(@RequestParam(value = "phone", required = false) Long phone, @RequestParam(value="email", required = false) String email){
+          String message=  consumerService.sendPasswordResetOTP(email,phone);
+          return new ResponseEntity<>(new ApiResponse<>(message),HttpStatus.OK);
+    }
+
+    @PutMapping("/password/change")
+    public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody PasswordChangeDto passwordChangeDto){
+        String message=  consumerService.changePassword(passwordChangeDto);
+        return new ResponseEntity<>(new ApiResponse<>(message),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
+    @PutMapping("/password/old/change")
+    public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody OldNewPasswordDtp passwordDto){
+        String consumerToken=consumerService.changePassword(passwordDto);
+        return new ResponseEntity<>(new ApiResponse<>(consumerToken),HttpStatus.OK);
     }
 }

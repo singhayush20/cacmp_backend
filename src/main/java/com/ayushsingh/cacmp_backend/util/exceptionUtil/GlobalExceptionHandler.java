@@ -28,6 +28,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
+    @ExceptionHandler(DuplicateVoteException.class)
+    public ResponseEntity<ApiResponse<String>> handleDuplicateVoteException(DuplicateVoteException e){
+        ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.DUPLICATE_VOTE_CODE,AppConstants.DUPLICATE_VOTE_MESSAGE,e.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
     @ExceptionHandler(RefreshTokenExpiredException.class)
     public ResponseEntity<ApiResponse<String>> handleRefreshTokenExpiredException(RefreshTokenExpiredException e){
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.REFRESH_TOKEN_EXPIRED,AppConstants.ERROR_RESPONSE,e.getMessage());

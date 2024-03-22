@@ -12,16 +12,21 @@ import java.util.Optional;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
-    @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.email = ?1")
+    @Query("select c from Consumer c where c.email = ?1")
     Optional<Consumer> findByEmail(String username);
+
+    @Query("select c from Consumer c where c.phone = ?1")
+    Optional<Consumer> findByPhone (String phone);
 
     Boolean existsByEmail(String email);
 
-    @Query("select c.consumerToken from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.email = ?1")
+    Boolean existsByPhone(String phone);
+
+    @Query("select c.consumerToken from Consumer c where c.email = ?1")
     String findTokenByEmail(String email);
 
 
-    @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.consumerToken = ?1")
+    @Query("select c from Consumer c where c.consumerToken = ?1")
     Optional<Consumer> findByConsumerToken(String consumerToken);
 
     @Query("""
@@ -38,11 +43,11 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
             c.address.city as city,
             c.address.state as state
             FROM
-            com.ayushsingh.cacmp_backend.models.entities.Consumer c WHERE c.consumerToken = ?1
+            Consumer c WHERE c.consumerToken = ?1
             """)
     ConsumerDetailsProjection getConsumerDetails(String token);
 
-    @Query("select c from com.ayushsingh.cacmp_backend.models.entities.Consumer c where c.consumerToken = ?1")
+    @Query("select c from Consumer c where c.consumerToken = ?1")
    Optional<Consumer> findByUserToken(String userToken);
 
 
@@ -51,4 +56,6 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
     @Query("SELECT c.address.pinCode AS pinCode, COUNT(c) AS count FROM Consumer c GROUP BY c.address.pinCode")
     List<Map<Long, Long>> countConsumersByPinCode();
+
+
 }

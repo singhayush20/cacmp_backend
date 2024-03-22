@@ -14,7 +14,7 @@ import com.ayushsingh.cacmp_backend.repository.entities.ArticleMediaRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.ArticleRepository;
 import com.ayushsingh.cacmp_backend.repository.entities.DepartmentRepository;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ArticleFilter;
-import com.ayushsingh.cacmp_backend.repository.filterDto.ArticlePaginationDto;
+import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
 import com.ayushsingh.cacmp_backend.repository.specifications.article.ArticleSpecification;
 import com.ayushsingh.cacmp_backend.services.ArticleService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
@@ -134,12 +134,12 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleDetailsDto> getArticlesList (ArticlePaginationDto articlePaginationDto) {
+    public List<ArticleDetailsDto> getArticlesList (PaginationDto paginationDto) {
         Sort sort = null;
-        if (articlePaginationDto.getSortBy() != null) {
-            sort = Sort.by(articlePaginationDto.getSortBy());
+        if (paginationDto.getSortBy() != null) {
+            sort = Sort.by(paginationDto.getSortBy());
 
-            if ("dsc".equals(articlePaginationDto.getSortDirection())) {
+            if ("dsc".equals(paginationDto.getSortDirection())) {
                 sort = sort.descending();
             } else {
                 sort = sort.ascending();
@@ -148,7 +148,7 @@ public class ArticleServiceImpl implements ArticleService {
             sort = Sort.by("publishDate").descending();
         }
 
-        Pageable pageable = PageRequest.of(articlePaginationDto.getPageNumber(), articlePaginationDto.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(paginationDto.getPageNumber(), paginationDto.getPageSize(), sort);
         Page<Article> articles = this.articleRepository.findAllPublished(pageable);
         List<ArticleDetailsDto> articleList = new ArrayList<>();
         for (Article article : articles) {
