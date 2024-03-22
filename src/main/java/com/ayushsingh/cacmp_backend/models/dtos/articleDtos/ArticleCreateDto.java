@@ -13,5 +13,6 @@ public class ArticleCreateDto {
 
     private String title;
     private String content;
+    private String slug;
     private String departmentToken;
 }

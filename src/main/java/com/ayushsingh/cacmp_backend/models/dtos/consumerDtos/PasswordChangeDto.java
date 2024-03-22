@@ -16,4 +16,6 @@ public class PasswordChangeDto {
     Long phone;
 
     String password;
+
+    Integer otp;
 }

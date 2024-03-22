@@ -23,6 +23,8 @@ public class ArticleDetailsDto {
 
     private String content;
 
+    private String slug;
+
     private PublishStatus publishStatus;
 
     private Date publishDate;

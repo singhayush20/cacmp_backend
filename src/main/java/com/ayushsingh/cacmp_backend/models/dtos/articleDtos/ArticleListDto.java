@@ -16,6 +16,8 @@ public class ArticleListDto {
 
     private String articleToken;
 
+    private String slug;
+
     private String title;
 
     private Date publishDate;

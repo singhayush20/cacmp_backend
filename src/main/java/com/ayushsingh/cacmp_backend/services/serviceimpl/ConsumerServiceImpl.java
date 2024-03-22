@@ -131,74 +131,87 @@ public class ConsumerServiceImpl implements ConsumerService {
                         phone.toString(),
                         "sms")
                 .create();
-        log.info("otp sent to: {}",phone);
+        log.info("otp sent to: {}", phone);
     }
 
     @Override
-    public void verifyPhoneOTP(Long phone,Integer otp) {
+    public void verifyPhoneOTP(Long phone, Integer otp) {
         try {
             VerificationCheck verificationCheck = VerificationCheck.creator(
-                    twilioConfigurationProperties.serviceSid())
+                            twilioConfigurationProperties.serviceSid())
                     .setTo(phone.toString())
                     .setCode(otp.toString())
                     .create();
-            log.info("verification status: {}",verificationCheck.getStatus());
+            log.info("verification status: {}", verificationCheck.getStatus());
         } catch (Exception e) {
             throw new ApiException("The otp is either incorrect or expired!");
         }
     }
 
     @Override
-    public String sendPasswordResetOTP (String email, Long phone) {
-        if(email!=null){
-            if(consumerRepository.existsByEmail(email)){
+    public String sendPasswordResetOTP(String email, Long phone) {
+        if (email != null) {
+            if (consumerRepository.existsByEmail(email)) {
                 sendVerificationEmail(email);
-                return "OTP sent to "+email;
-            }
-            else throw new ApiException("No consumer found with email: "+email);
-        }
-        else if(phone!=null){
-            if(consumerRepository.existsByPhone(phone.toString())){
+                return "OTP sent to " + email;
+            } else throw new ApiException("No consumer found with email: " + email);
+        } else if (phone != null) {
+            if (consumerRepository.existsByPhone(phone.toString())) {
                 sendPhoneVerificationOTP(phone);
-                return "OTP sent to "+phone;
-            }
-            else throw new ApiException("No consumer found with phone number: "+phone);
+                return "OTP sent to " + phone;
+            } else throw new ApiException("No consumer found with phone number: " + phone);
 
         }
         throw new ApiException("Neither email nor phone is present");
     }
 
     @Override
-    public String changePassword (PasswordChangeDto passwordChangeDto) {
-        String password= passwordChangeDto.getPassword();
-        String email= passwordChangeDto.getEmail();
-        Long phone= passwordChangeDto.getPhone();
-        if(email!=null){
-          Consumer consumer=  consumerRepository.findByEmail(email).orElseThrow(()->new ApiException("No consumer found with email: "+email));
+    public String changePassword(PasswordChangeDto passwordChangeDto) {
+        String password = passwordChangeDto.getPassword();
+        String email = passwordChangeDto.getEmail();
+        Long phone = passwordChangeDto.getPhone();
+        Integer otp = passwordChangeDto.getOtp();
+        if (email != null) {
+            Consumer consumer = consumerRepository.findByEmail(email).orElseThrow(() -> new ApiException("No consumer found with email: " + email));
+            int storedOTP = otpService.getOTP(email);
+            log.info("Stored otp: " + storedOTP + " received otp: " + otp);
+            if (storedOTP != otp) {
+                throw new ApiException("The otp is either incorrect or expired!");
+            }
+            otpService.clearOTP(email);
             consumer.setPassword(passwordEncoder.encode(password));
-           return  consumerRepository.save(consumer).getConsumerToken();
-        }
-        else if(phone!=null){
-            Consumer consumer=  consumerRepository.findByPhone(phone.toString()).orElseThrow(()->new ApiException("No consumer found with phone number: "+phone));
-            consumer.setPassword(passwordEncoder.encode(password));
-            return  consumerRepository.save(consumer).getConsumerToken();
-
+            return consumerRepository.save(consumer).getConsumerToken();
+        } else if (phone != null) {
+            Consumer consumer = consumerRepository.findByPhone(phone.toString()).orElseThrow(() -> new ApiException("No consumer found with phone number: " + phone));
+            try {
+                VerificationCheck verificationCheck = VerificationCheck.creator(
+                                twilioConfigurationProperties.serviceSid())
+                        .setTo(phone.toString())
+                        .setCode(otp.toString())
+                        .create();
+                log.info("verification status: {}", verificationCheck.getStatus());
+                consumer.setPassword(passwordEncoder.encode(password));
+                return consumerRepository.save(consumer).getConsumerToken();
+            } catch (Exception e) {
+                throw new ApiException("The otp is either incorrect or expired!");
+            }
         }
         throw new ApiException("Neither email nor phone is present");
     }
 
     @Override
     public String changePassword(OldNewPasswordDtp passwordDto) {
-        String oldPassword=passwordDto.getOldPassword();
-        String newPassword=passwordDto.getNewPassword();
-        String consumerToken=passwordDto.getConsumerToken();
-        Consumer consumer=this.consumerRepository.findByUserToken(consumerToken).orElseThrow(()->new ApiException("No consumer found with token: "+consumerToken));
-        if(passwordEncoder.matches(oldPassword,consumer.getPassword())){
+        String oldPassword = passwordDto.getOldPassword();
+        String newPassword = passwordDto.getNewPassword();
+        String consumerToken = passwordDto.getConsumerToken();
+        Consumer consumer = this.consumerRepository.findByUserToken(consumerToken).orElseThrow(() -> new ApiException("No consumer found with token: " + consumerToken));
+        if (passwordEncoder.matches(oldPassword, consumer.getPassword())) {
             consumer.setPassword(passwordEncoder.encode(newPassword));
             return consumerRepository.save(consumer).getConsumerToken();
-        }
-        else{
+        } else {
             throw new ApiException("Old password is incorrect");
         }
     }
+
+
 }

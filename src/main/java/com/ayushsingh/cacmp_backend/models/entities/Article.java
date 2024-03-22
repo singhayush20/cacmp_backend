@@ -35,6 +35,9 @@ public class Article {
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
+    @Column(name = "slug", nullable = false,unique = true)
+    private String slug;
+
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private PublishStatus publishStatus;

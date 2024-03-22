@@ -36,7 +36,7 @@ public class ArticleController {
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @PostMapping("/upload/images")
     public ResponseEntity<ApiResponse<String>> uploadImages(@RequestParam("token") String articleToken, @RequestPart("images") MultipartFile[] images) {
-        return new ResponseEntity<>(new ApiResponse<>(articleService.uploadImages(articleToken, images)), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse<>(articleService.   uploadImages(articleToken, images)), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")

@@ -142,4 +142,6 @@ public class ConsumerController {
         String consumerToken=consumerService.changePassword(passwordDto);
         return new ResponseEntity<>(new ApiResponse<>(consumerToken),HttpStatus.OK);
     }
+
+
 }

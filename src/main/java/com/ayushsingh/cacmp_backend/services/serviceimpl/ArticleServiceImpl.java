@@ -44,12 +44,14 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ImageService imageService;
 
+    @Transactional
     @Override
     public String createNewArticle (ArticleCreateDto articleCreateDto) {
         Department department = this.departmentRepository.findByDepartmentToken(articleCreateDto.getDepartmentToken()).orElseThrow(() -> new ApiException("Department not found"));
         Article article = new Article();
         article.setDepartment(department);
         article.setTitle(articleCreateDto.getTitle());
+        article.setSlug(articleCreateDto.getSlug());
         article.setContent(articleCreateDto.getContent());
         article.setPublishStatus(PublishStatus.DRAFT);
         return articleRepository.save(article).getArticleToken();
@@ -72,11 +74,12 @@ public class ArticleServiceImpl implements ArticleService {
         return articleToken;
     }
 
+    @Transactional
     @Override
     public String uploadVideos (String articleToken, MultipartFile[] videos) {
         Article article = this.articleRepository.findByArticleToken(articleToken).orElseThrow(() -> new ApiException("Article not found"));
         for (MultipartFile video : videos) {
-            Map<String, Object> uploadResult = imageService.uploadArticleImage(video);
+            Map<String, Object> uploadResult = imageService.uploadArticleVideo(video);
             ArticleMedia articleMedia = new ArticleMedia();
             articleMedia.setArticle(article);
             articleMedia.setMediaType(ArticleMediaType.IMAGE);
@@ -115,6 +118,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailsDto.setArticleToken(article.getArticleToken());
         articleDetailsDto.setTitle(article.getTitle());
         articleDetailsDto.setContent(article.getContent());
+        articleDetailsDto.setSlug(article.getSlug());
         articleDetailsDto.setPublishStatus(article.getPublishStatus());
         articleDetailsDto.setPublishDate(article.getPublishDate());
         String departmentName = this.articleRepository.findDepartmentNameByToken(articleToken);
@@ -157,6 +161,7 @@ public class ArticleServiceImpl implements ArticleService {
             articleDetailsDto.setTitle(article.getTitle());
             articleDetailsDto.setContent(article.getContent());
             articleDetailsDto.setPublishStatus(article.getPublishStatus());
+            articleDetailsDto.setSlug(article.getSlug());
             articleDetailsDto.setPublishDate(article.getPublishDate());
             String departmentName = this.articleRepository.findDepartmentNameByToken(article.getArticleToken());
             articleDetailsDto.setDepartmentName(departmentName);
@@ -184,6 +189,7 @@ public class ArticleServiceImpl implements ArticleService {
         for (Article article : articles) {
             ArticleListDto articleListDto = new ArticleListDto();
             articleListDto.setArticleToken(article.getArticleToken());
+            articleListDto.setSlug(article.getSlug());
             articleListDto.setTitle(article.getTitle());
             articleListDto.setPublishStatus(article.getPublishStatus());
             articleListDto.setPublishDate(article.getPublishDate());

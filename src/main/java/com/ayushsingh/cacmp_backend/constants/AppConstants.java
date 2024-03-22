@@ -43,6 +43,8 @@ public class AppConstants {
             "/api/v1/consumer/email/verify",
             "/api/v1/consumer/phone/otp",
             "/api/v1/consumer/phone/verify",
+            "/api/v1/consumer/password/forget",
+            "/api/v1/consumer/password/change",
     };
 
 }

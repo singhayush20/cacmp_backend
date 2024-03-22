@@ -29,5 +29,6 @@ public interface ConsumerService {
 
     String changePassword(PasswordChangeDto passwordChangeDto);
 
-    String changePassword(OldNewPasswordDtp passwordDto)
+    String changePassword(OldNewPasswordDtp passwordDto);
+
 }
