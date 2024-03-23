@@ -53,9 +53,10 @@ public class CloudinaryImageServiceImpl implements ImageService {
             Map<String, Object> uploadOptions = new HashMap<>();
             uploadOptions.put("folder", "Article Images");
             uploadOptions.put("display_name",file.getOriginalFilename());
-           return (Map<String, Object>) cloudinary.uploader().upload(file, uploadOptions);
+           return (Map<String, Object>) cloudinary.uploader().upload(file.getBytes(), uploadOptions);
 
         } catch (IOException e) {
+           log.error("Error uploading the article image: {}", e.getMessage());
             throw new ApiException("Error uploading the article image");
         }
     }
@@ -67,7 +68,8 @@ public class CloudinaryImageServiceImpl implements ImageService {
             Map<String, Object> uploadOptions = new HashMap<>();
             uploadOptions.put("folder", "Article Videos");
             uploadOptions.put("display_name",file.getOriginalFilename());
-            return (Map<String, Object>) cloudinary.uploader().upload(file, uploadOptions);
+            uploadOptions.put("resource_type", "video");
+            return (Map<String, Object>) cloudinary.uploader().upload(file.getBytes(), uploadOptions);
 
         } catch (IOException e) {
             throw new ApiException("Error uploading the article video");

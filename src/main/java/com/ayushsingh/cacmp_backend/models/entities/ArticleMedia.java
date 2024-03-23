@@ -43,6 +43,7 @@ public class ArticleMedia {
     private String fileName;
 
     @Column(name="url",nullable = false)
+
     private String url;
 
 

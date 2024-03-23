@@ -20,7 +20,9 @@ public class ArticleListDto {
 
     private String title;
 
-    private Date publishDate;
+    private Date publishedOn;
+
+    private Date createdOn;
 
     private PublishStatus publishStatus;
 }

@@ -62,13 +62,14 @@ public class ArticleServiceImpl implements ArticleService {
     public String uploadImages (String articleToken, MultipartFile[] images) {
         Article article = this.articleRepository.findByArticleToken(articleToken).orElseThrow(() -> new ApiException("Article not found"));
         for (MultipartFile image : images) {
+
             Map<String, Object> uploadResult = imageService.uploadArticleImage(image);
             ArticleMedia articleMedia = new ArticleMedia();
             articleMedia.setArticle(article);
             articleMedia.setMediaType(ArticleMediaType.IMAGE);
+            articleMedia.setFileName(image.getOriginalFilename());
             articleMedia.setFormat(image.getContentType());
-            articleMedia.setUrl(uploadResult.get("public_url").toString());
-            articleMedia.setFileName(uploadResult.get("original_filename").toString());
+            articleMedia.setUrl((String) uploadResult.get("secure_url"));
             articleMediaRepository.save(articleMedia);
         }
         return articleToken;
@@ -82,10 +83,11 @@ public class ArticleServiceImpl implements ArticleService {
             Map<String, Object> uploadResult = imageService.uploadArticleVideo(video);
             ArticleMedia articleMedia = new ArticleMedia();
             articleMedia.setArticle(article);
-            articleMedia.setMediaType(ArticleMediaType.IMAGE);
+            articleMedia.setMediaType(ArticleMediaType.VIDEO);
             articleMedia.setFormat(video.getContentType());
-            articleMedia.setUrl(uploadResult.get("public_url").toString());
-            articleMedia.setFileName(uploadResult.get("original_filename").toString());
+            articleMedia.setFileName(video.getOriginalFilename());
+            articleMedia.setFormat(video.getContentType());
+            articleMedia.setUrl((String) uploadResult.get("secure_url"));
             articleMediaRepository.save(articleMedia);
         }
         return articleToken;
@@ -131,6 +133,7 @@ public class ArticleServiceImpl implements ArticleService {
             articleMediaDetailsDto.setFileName(articleMedia1.getFileName());
             articleMediaDetailsDto.setFormat(articleMedia1.getFormat());
             articleMediaDetailsDto.setMediaType(articleMedia1.getMediaType());
+            articleMediaDetailsDto.setMediaToken(articleMedia1.getMediaToken());
             articleMedia.add(articleMediaDetailsDto);
         }
         articleDetailsDto.setArticleMedia(articleMedia);
@@ -192,7 +195,8 @@ public class ArticleServiceImpl implements ArticleService {
             articleListDto.setSlug(article.getSlug());
             articleListDto.setTitle(article.getTitle());
             articleListDto.setPublishStatus(article.getPublishStatus());
-            articleListDto.setPublishDate(article.getPublishDate());
+            articleListDto.setPublishedOn(article.getPublishDate());
+            articleListDto.setCreatedOn(article.getCreatedAt());
             articleList.add(articleListDto);
         }
         return articleList;
