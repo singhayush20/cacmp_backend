@@ -49,6 +49,8 @@ public class Complaint {
     @Column(name = "subject", nullable = false, length = 500)
     private String complaintSubject;
 
+
+
     @Column(name = "description", nullable = false, length = 5000)
     private String complaintDescription;
 

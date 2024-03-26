@@ -5,6 +5,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.StatusUpdateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleListDto;
+import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleUpdateDto;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ArticleFilter;
 import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
 import com.ayushsingh.cacmp_backend.services.ArticleService;
@@ -79,5 +80,15 @@ public class ArticleController {
         articleFilter.setDeptToken(token);
         List<ArticleListDto> articleList = articleService.getArticlesListByDepartment(articleFilter,sort);
         return new ResponseEntity<>(new ApiResponse<>(articleList), HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse<String>> updateArticle(@RequestBody ArticleUpdateDto articleUpdateDto) {
+        return new ResponseEntity<>(new ApiResponse<>(articleService.updateArticle(articleUpdateDto)), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<String>> deleteArticle(@RequestParam("token") String articleToken) {
+        return new ResponseEntity<>(new ApiResponse<>(articleService.deleteArticle(articleToken)), HttpStatus.OK);
     }
 }

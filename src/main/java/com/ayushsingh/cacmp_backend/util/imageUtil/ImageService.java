@@ -13,4 +13,12 @@ public interface ImageService {
      Map<String,Object> uploadArticleImage(MultipartFile file);
 
      Map<String,Object> uploadArticleVideo(MultipartFile file);
+
+     Boolean deleteArticleVideo(String publicId);
+
+     Boolean deleteArticleImage(String publicId);
+
+     Boolean deleteAlertImage(String publicId);
+
+     Boolean deleteComplaintImage(String publicId);
 }

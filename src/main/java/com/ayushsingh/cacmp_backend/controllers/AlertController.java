@@ -76,4 +76,6 @@ public class AlertController {
         List<AlertFeedDto> alerts = this.alertService.getAlertFeed(pageDto);
         return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
     }
+
+
 }

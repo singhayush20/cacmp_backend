@@ -42,6 +42,15 @@ public class ArticleMedia {
     @Column(name="file_name",nullable = false)
     private String fileName;
 
+    @Column(name="signature",nullable = false,unique = true)
+    private String signature;
+
+    @Column(name="asset_id",nullable = false,unique = true)
+    private String assetId;
+
+    @Column(name="public_id",nullable = false,unique = true)
+    private String publicId;
+
     @Column(name="url",nullable = false)
 
     private String url;

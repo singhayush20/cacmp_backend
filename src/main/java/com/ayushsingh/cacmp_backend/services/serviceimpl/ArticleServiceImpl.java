@@ -6,6 +6,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.StatusUpdateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleListDto;
+import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleUpdateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleMedia.ArticleMediaDetailsDto;
 import com.ayushsingh.cacmp_backend.models.entities.Article;
 import com.ayushsingh.cacmp_backend.models.entities.ArticleMedia;
@@ -46,7 +47,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public String createNewArticle (ArticleCreateDto articleCreateDto) {
+    public String createNewArticle(ArticleCreateDto articleCreateDto) {
         Department department = this.departmentRepository.findByDepartmentToken(articleCreateDto.getDepartmentToken()).orElseThrow(() -> new ApiException("Department not found"));
         Article article = new Article();
         article.setDepartment(department);
@@ -59,7 +60,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public String uploadImages (String articleToken, MultipartFile[] images) {
+    public String uploadImages(String articleToken, MultipartFile[] images) {
         Article article = this.articleRepository.findByArticleToken(articleToken).orElseThrow(() -> new ApiException("Article not found"));
         for (MultipartFile image : images) {
 
@@ -70,6 +71,9 @@ public class ArticleServiceImpl implements ArticleService {
             articleMedia.setFileName(image.getOriginalFilename());
             articleMedia.setFormat(image.getContentType());
             articleMedia.setUrl((String) uploadResult.get("secure_url"));
+            articleMedia.setAssetId((String) uploadResult.get("asset_id"));
+            articleMedia.setPublicId((String) uploadResult.get("public_id"));
+            articleMedia.setSignature((String) uploadResult.get("signature"));
             articleMediaRepository.save(articleMedia);
         }
         return articleToken;
@@ -77,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public String uploadVideos (String articleToken, MultipartFile[] videos) {
+    public String uploadVideos(String articleToken, MultipartFile[] videos) {
         Article article = this.articleRepository.findByArticleToken(articleToken).orElseThrow(() -> new ApiException("Article not found"));
         for (MultipartFile video : videos) {
             Map<String, Object> uploadResult = imageService.uploadArticleVideo(video);
@@ -88,13 +92,16 @@ public class ArticleServiceImpl implements ArticleService {
             articleMedia.setFileName(video.getOriginalFilename());
             articleMedia.setFormat(video.getContentType());
             articleMedia.setUrl((String) uploadResult.get("secure_url"));
+            articleMedia.setAssetId((String) uploadResult.get("asset_id"));
+            articleMedia.setPublicId((String) uploadResult.get("public_id"));
+            articleMedia.setSignature((String) uploadResult.get("signature"));
             articleMediaRepository.save(articleMedia);
         }
         return articleToken;
     }
 
     @Override
-    public String changeStatus (StatusUpdateDto statusUpdateDto) {
+    public String changeStatus(StatusUpdateDto statusUpdateDto) {
         Article article = this.articleRepository.findByArticleToken(statusUpdateDto.getToken()).orElseThrow(() -> new ApiException("Article not found"));
         PublishStatus currentStatus = article.getPublishStatus();
         PublishStatus publishStatus = statusUpdateDto.getPublishStatus();
@@ -114,7 +121,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleDetailsDto getArticleDetails (String articleToken) {
+    public ArticleDetailsDto getArticleDetails(String articleToken) {
         Article article = this.articleRepository.findByArticleToken(articleToken).orElseThrow(() -> new ApiException("Article not found"));
         ArticleDetailsDto articleDetailsDto = new ArticleDetailsDto();
         articleDetailsDto.setArticleToken(article.getArticleToken());
@@ -141,7 +148,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleDetailsDto> getArticlesList (PaginationDto paginationDto) {
+    public List<ArticleDetailsDto> getArticlesList(PaginationDto paginationDto) {
         Sort sort = null;
         if (paginationDto.getSortBy() != null) {
             sort = Sort.by(paginationDto.getSortBy());
@@ -185,7 +192,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleListDto> getArticlesListByDepartment (ArticleFilter articleFilter, Sort sort) {
+    public List<ArticleListDto> getArticlesListByDepartment(ArticleFilter articleFilter, Sort sort) {
         Specification<Article> articleSpecification = ArticleSpecification.filterArticles(articleFilter);
         List<Article> articles = this.articleRepository.findAll(articleSpecification, sort);
         List<ArticleListDto> articleList = new ArrayList<>();
@@ -202,5 +209,55 @@ public class ArticleServiceImpl implements ArticleService {
         return articleList;
     }
 
+    @Transactional
+    @Override
+    public String updateArticle(ArticleUpdateDto articleUpdateDto) {
+        String token = articleUpdateDto.getArticleToken();
+        Article article = this.articleRepository.findByArticleToken(token).orElseThrow(() -> new ApiException("Article not found"));
+        article.setTitle(articleUpdateDto.getTitle());
+        article.setContent(articleUpdateDto.getContent());
+        article.setSlug(articleUpdateDto.getSlug());
 
+        if (articleUpdateDto.getImageTokens() != null && !articleUpdateDto.getImageTokens().isEmpty()) {
+            List<ArticleMedia> mediaFiles = articleMediaRepository.findAllByMediaTokens(articleUpdateDto.getImageTokens());
+            deleteMediaFiles(new HashSet<>(mediaFiles));
+        }
+        else if(articleUpdateDto.getVideoTokens() != null && !articleUpdateDto.getVideoTokens().isEmpty()) {
+            List<ArticleMedia> mediaFiles = articleMediaRepository.findAllByMediaTokens(articleUpdateDto.getVideoTokens());
+            deleteMediaFiles(new HashSet<>(mediaFiles));
+        }
+        if (articleUpdateDto.getIsMediaTypeChanged()) {
+            Set<ArticleMedia> mediaFiles = article.getArticleMedia();
+            deleteMediaFiles(mediaFiles);
+        }
+
+        article.getArticleMedia().clear();
+        return articleRepository.save(article).getArticleToken();
+    }
+
+
+    @Override
+    public String deleteArticle(String articleToken) {
+        Article article = this.articleRepository.findByArticleToken(articleToken).orElseThrow(() -> new ApiException("Article not found"));
+        Set<ArticleMedia> mediaFiles = article.getArticleMedia();
+        deleteMediaFiles(mediaFiles);
+        this.articleRepository.delete(article);
+        return "Article deleted successfully";
+    }
+
+    private void deleteMediaFiles(Set<ArticleMedia> mediaFiles) {
+        for (ArticleMedia articleMedia : mediaFiles) {
+            if (articleMedia.getMediaType() == ArticleMediaType.IMAGE) {
+                Boolean isDeleted = imageService.deleteArticleImage(articleMedia.getPublicId());
+                if (isDeleted) {
+                    articleMediaRepository.delete(articleMedia);
+                }
+            } else if (articleMedia.getMediaType() == ArticleMediaType.VIDEO) {
+                Boolean isDeleted = imageService.deleteArticleVideo(articleMedia.getPublicId());
+                if (isDeleted) {
+                    articleMediaRepository.delete(articleMedia);
+                }
+            }
+        }
+    }
 }

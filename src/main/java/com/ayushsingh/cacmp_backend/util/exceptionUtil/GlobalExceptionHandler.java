@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e){
+        e.printStackTrace();
         ApiResponse<String> apiResponse=new ApiResponse<>(AppConstants.ERROR_CODE,AppConstants.ERROR_RESPONSE,e.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }

@@ -54,11 +54,6 @@ public class AlertDocument {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @PrePersist
-    protected void setToken() {
-        documentToken = UUID.randomUUID().toString();
-    }
-
 
 
     @Override

@@ -4,6 +4,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.StatusUpdateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleCreateDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleListDto;
+import com.ayushsingh.cacmp_backend.models.dtos.articleDtos.ArticleUpdateDto;
 import com.ayushsingh.cacmp_backend.repository.filterDto.ArticleFilter;
 import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
 import org.springframework.data.domain.Sort;
@@ -26,4 +27,8 @@ public interface ArticleService {
     List<ArticleDetailsDto> getArticlesList(PaginationDto paginationDto);
 
     List<ArticleListDto> getArticlesListByDepartment(ArticleFilter articleFilter, Sort sort);
+
+    String updateArticle(ArticleUpdateDto articleUpdateDto);
+
+    String deleteArticle(String articleToken);
 }
