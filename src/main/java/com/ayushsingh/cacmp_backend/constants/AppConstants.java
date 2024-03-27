@@ -45,6 +45,7 @@ public class AppConstants {
             "/api/v1/consumer/phone/verify",
             "/api/v1/consumer/password/forget",
             "/api/v1/consumer/password/change",
+            "/api/v1/article/feed"
     };
 
 }

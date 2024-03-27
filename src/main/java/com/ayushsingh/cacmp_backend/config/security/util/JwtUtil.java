@@ -14,6 +14,8 @@ import java.util.function.Function;
 
 public class JwtUtil {
 
+
+
     public static String extractUsername(String token) {
         String subject = extractClaim(token, Claims::getSubject);
         System.out.println("Extracted subject: " + subject);

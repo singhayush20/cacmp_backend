@@ -59,7 +59,6 @@ public class ArticleController {
         return new ResponseEntity<>(new ApiResponse<>(articleDetailsDto), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @GetMapping("/feed")
     public ResponseEntity<ApiResponse<List<ArticleDetailsDto>>> getArticlesList(@RequestBody PaginationDto paginationDto) {
         List<ArticleDetailsDto> articleDetailsDto = articleService.getArticlesList(paginationDto);

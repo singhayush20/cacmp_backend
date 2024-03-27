@@ -183,7 +183,9 @@ public class ArticleServiceImpl implements ArticleService {
                 articleMediaDetailsDto.setFileName(articleMedia1.getFileName());
                 articleMediaDetailsDto.setFormat(articleMedia1.getFormat());
                 articleMediaDetailsDto.setMediaType(articleMedia1.getMediaType());
+                articleMediaDetailsDto.setMediaToken(articleMedia1.getMediaToken());
                 articleMedia.add(articleMediaDetailsDto);
+
             }
             articleDetailsDto.setArticleMedia(articleMedia);
             articleList.add(articleDetailsDto);
