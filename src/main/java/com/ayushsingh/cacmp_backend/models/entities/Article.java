@@ -38,6 +38,9 @@ public class Article {
     @Column(name = "slug", nullable = false,unique = true)
     private String slug;
 
+    @Column(name = "description",length = 1000,nullable = false)
+    private String description;
+
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private PublishStatus publishStatus;

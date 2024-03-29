@@ -52,16 +52,27 @@ public class ArticleController {
         return new ResponseEntity<>(new ApiResponse<>(articleService.changeStatus(statusUpdateDto)), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_RESIDENT','ROLE_NON_RESIDENT','ROLE_DEPARTMENT')")
     @GetMapping("/details")
     public ResponseEntity<ApiResponse<ArticleDetailsDto>> getArticleDetails(@RequestParam("token") String articleToken) {
         ArticleDetailsDto articleDetailsDto = articleService.getArticleDetails(articleToken);
         return new ResponseEntity<>(new ApiResponse<>(articleDetailsDto), HttpStatus.OK);
     }
 
+    @GetMapping("")
+    public ResponseEntity<ApiResponse<ArticleDetailsDto>> getArticleDetailsBySlug(@RequestParam("slug") String slug) {
+        ArticleDetailsDto articleDetailsDto = articleService.getArticleDetailsBySlug(slug);
+        return new ResponseEntity<>(new ApiResponse<>(articleDetailsDto), HttpStatus.OK);
+
+    }
     @GetMapping("/feed")
     public ResponseEntity<ApiResponse<List<ArticleDetailsDto>>> getArticlesList(@RequestBody PaginationDto paginationDto) {
         List<ArticleDetailsDto> articleDetailsDto = articleService.getArticlesList(paginationDto);
+        return new ResponseEntity<>(new ApiResponse<>(articleDetailsDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/web/feed")
+    public ResponseEntity<ApiResponse<List<ArticleDetailsDto>>> getWebArticlesList(@RequestParam("sortBy") String sortBy, @RequestParam("sortDirection") String sortDirection, @RequestParam("pageCount") int pageNumber, @RequestParam("pageSize") int pageSize) {
+        List<ArticleDetailsDto> articleDetailsDto = articleService.getArticlesList(new PaginationDto(pageNumber,pageSize,sortBy,sortDirection));
         return new ResponseEntity<>(new ApiResponse<>(articleDetailsDto), HttpStatus.OK);
     }
 

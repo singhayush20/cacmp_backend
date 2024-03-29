@@ -24,5 +24,7 @@ public class ArticleListDto {
 
     private Date createdOn;
 
+    private String description;
+
     private PublishStatus publishStatus;
 }

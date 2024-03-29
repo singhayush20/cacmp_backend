@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.repository.entities;
 
+import com.ayushsingh.cacmp_backend.models.constants.PublishStatus;
 import com.ayushsingh.cacmp_backend.models.entities.Article;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +24,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findAllPublished (Pageable pageable);
 
     List<Article> findAll (Specification<Article> articleSpecification, Sort sort);
+
+    @Query("SELECT a FROM Article a WHERE a.slug = ?1")
+    Optional<Article> findBySlug(String slug);
+
+    @Query("SELECT COUNT(a) FROM Article a WHERE a.publishStatus = ?1")
+    Long findCountByPublishStatus(PublishStatus publishStatus);
 }

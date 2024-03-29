@@ -17,6 +17,7 @@ public class ArticleUpdateDto {
     private String title;
     private String content;
     private String slug;
+    private String description;
     private Set<String> imageTokens=new HashSet<>(); //tokens of images which must be removed
     private Set<String> videoTokens=new HashSet<>(); //tokens of videos which must be removed
     private Boolean isMediaTypeChanged; //if true, delete the current files and new files will be saved later

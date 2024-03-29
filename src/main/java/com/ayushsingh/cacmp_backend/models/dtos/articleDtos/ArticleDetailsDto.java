@@ -31,6 +31,10 @@ public class ArticleDetailsDto {
 
     private String departmentName;
 
+    private Long total;
+
+    private String description;
+
     private List<ArticleMediaDetailsDto> articleMedia=new ArrayList<>();
 
 }

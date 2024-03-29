@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
+import com.ayushsingh.cacmp_backend.models.constants.AlertInputType;
 import com.ayushsingh.cacmp_backend.models.constants.PublishStatus;
 import com.ayushsingh.cacmp_backend.models.dtos.alertDtos.*;
 import com.ayushsingh.cacmp_backend.models.dtos.driveFileDtos.UploadedFileDto;
@@ -172,6 +173,10 @@ public class AlertServiceImpl implements AlertService {
             alertFeedDto.setSubject(alert.getSubject());
             alertFeedDto.setPublishedOn(alert.getPublishedOn());
             alertFeedDto.setAlertInputType(alert.getInputType());
+            if(alert.getInputType()== AlertInputType.DOCUMENT){
+                List<AlertDocumentUrlProjection> documentUrlProjections = this.alertDocumentRepository.findAllByAlertToken(alert.getAlertToken());
+                alertFeedDto.setAlertDocuments(documentUrlProjections);
+            }
             return alertFeedDto;
         }).collect(Collectors.toList());
     }

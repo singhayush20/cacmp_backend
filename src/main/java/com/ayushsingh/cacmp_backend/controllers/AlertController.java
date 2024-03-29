@@ -31,7 +31,6 @@ public class AlertController {
         return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_DEPARTMENT','ROLE_RESIDENT','ROLE_NON_RESIDENT')")
     @GetMapping("")
     public ResponseEntity<ApiResponse<AlertDetailsDto>> getAlertDetails (@RequestParam("token") String token) {
         AlertDetailsDto alertDetailsDto = this.alertService.getAlertDetails(token);
@@ -71,9 +70,16 @@ public class AlertController {
         return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_NON_RESIDENT','ROLE_RESIDENT')")
     @GetMapping("/feed")
     public ResponseEntity<ApiResponse<List<AlertFeedDto>>> getAlertFeed(@RequestBody PaginationDto pageDto) {
         List<AlertFeedDto> alerts = this.alertService.getAlertFeed(pageDto);
+        return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
+    }
+
+    @GetMapping("/web/feed")
+    public ResponseEntity<ApiResponse<List<AlertFeedDto>>> getAlertWebFeed(@RequestParam("sortBy") String sortBy, @RequestParam("sortDirection") String sortDirection, @RequestParam("pageCount") int pageNumber, @RequestParam("pageSize") int pageSize) {
+        List<AlertFeedDto> alerts = this.alertService.getAlertFeed(new PaginationDto(pageNumber, pageSize, sortBy, sortDirection));
         return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
     }
 

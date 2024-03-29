@@ -31,4 +31,6 @@ public interface ArticleService {
     String updateArticle(ArticleUpdateDto articleUpdateDto);
 
     String deleteArticle(String articleToken);
+
+    ArticleDetailsDto getArticleDetailsBySlug(String slug);
 }
