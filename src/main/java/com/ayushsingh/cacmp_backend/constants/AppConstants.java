@@ -51,6 +51,7 @@ public class AppConstants {
             "/api/v1/article/web/feed",
             "/api/v1/alert/web/feed",
             "/api/v1/alert",
+            "/api/v1/query/new",
     };
 
 }
