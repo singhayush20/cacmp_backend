@@ -29,6 +29,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
+    private final JwtUtil jwtUtil;
 
     @Value("${jwt.accessTokenCookieName}")
     private String accessTokenCookieName;
@@ -46,7 +47,7 @@ public class UserController {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String token=userService.getUserToken(username);
-            String accessToken = JwtUtil.generateToken(username, AppConstants.ENTITY_TYPE_USER);
+            String accessToken = jwtUtil.generateToken(username, AppConstants.ENTITY_TYPE_USER);
             CookieUtil.create(httpServletResponse, accessTokenCookieName, accessToken, false, -1, "localhost");
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(username, AppConstants.ENTITY_TYPE_USER);
             LoginResponseDto loginResponseDto = new LoginResponseDto();
@@ -70,7 +71,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> refreshJwtToken(@RequestBody RefreshTokenDto refreshTokenDto, HttpServletResponse httpServletResponse) {
         Boolean isRefreshTokenValid=this.refreshTokenService.verifyRefreshToken(refreshTokenDto.getRefreshToken());
         if(isRefreshTokenValid){
-            String token= JwtUtil.generateToken(refreshTokenDto.getUsername(), AppConstants.ENTITY_TYPE_USER);
+            String token= jwtUtil.generateToken(refreshTokenDto.getUsername(), AppConstants.ENTITY_TYPE_USER);
             CookieUtil.create(httpServletResponse, accessTokenCookieName, token, false, -1, "localhost");
             return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
         }

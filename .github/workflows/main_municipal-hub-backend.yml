@@ -22,7 +22,7 @@ jobs:
           java-version: '21'
 
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn clean install -Pazure-sql
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -44,13 +44,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-      
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2264639FD79F43D8940BBBD388FBB562 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B585DF2197004AC19F3AC6877F70B529 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_51D2AB8C889546EAA1D291006CE4139A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -59,4 +60,18 @@ jobs:
           app-name: 'municipal-hub-backend'
           slot-name: 'Production'
           package: '*.war'
-          
+        env:
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_SERVICE_SID: ${{ secrets.TWILIO_SERVICE_SID }}
+          DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
+          DRIVE_URL_PREFIX: ${{ secrets.DRIVE_URL_PREFIX }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}

@@ -35,6 +35,8 @@ public class ConsumerController {
     private String accessTokenCookieName;
 
 
+    private final JwtUtil jwtUtil;
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody ConsumerDetailsDto consumerDetailsDto) {
         String consumerToken = consumerService.registerConsumer(consumerDetailsDto);
@@ -46,7 +48,7 @@ public class ConsumerController {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String token=consumerService.getConsumerToken(username);
-            String accessToken = JwtUtil.generateToken(username, AppConstants.ENTITY_TYPE_CONSUMER);
+            String accessToken = jwtUtil.generateToken(username, AppConstants.ENTITY_TYPE_CONSUMER);
             CookieUtil.create(httpServletResponse, accessTokenCookieName, accessToken, false, -1, "localhost");
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(username, AppConstants.ENTITY_TYPE_CONSUMER);
             LoginResponseDto loginResponseDto = new LoginResponseDto();
@@ -71,7 +73,7 @@ public class ConsumerController {
     public ResponseEntity<ApiResponse<String>> refreshJwtToken(@RequestBody RefreshTokenDto refreshTokenDto, HttpServletResponse httpServletResponse) {
         Boolean isRefreshTokenValid=this.refreshTokenService.verifyRefreshToken(refreshTokenDto.getRefreshToken());
         if(isRefreshTokenValid){
-            String token= JwtUtil.generateToken(refreshTokenDto.getUsername(), AppConstants.ENTITY_TYPE_CONSUMER);
+            String token= jwtUtil.generateToken(refreshTokenDto.getUsername(), AppConstants.ENTITY_TYPE_CONSUMER);
             CookieUtil.create(httpServletResponse, accessTokenCookieName, token, false, -1, "localhost");
             return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
         }

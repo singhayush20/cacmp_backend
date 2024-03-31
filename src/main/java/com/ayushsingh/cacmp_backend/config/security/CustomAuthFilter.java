@@ -55,6 +55,9 @@ public class CustomAuthFilter extends OncePerRequestFilter {
     @Autowired
     private ConsumerDetailsService consumerDetailsService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Value("${jwt.accessTokenCookieName}")
     private String accessTokenCookieName;
 
@@ -115,8 +118,8 @@ public class CustomAuthFilter extends OncePerRequestFilter {
             UserDetails userDetails = null;
             try {
                 headerToken = StringUtils.delete(headerToken, AppConstants.BEARER_TOKEN_PREFIX).trim();
-                String entityType = JwtUtil.extractEntityType(headerToken);
-                String username = JwtUtil.extractUsername(headerToken);
+                String entityType = jwtUtil.extractEntityType(headerToken);
+                String username = jwtUtil.extractUsername(headerToken);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     if (entityType.equals(AppConstants.ENTITY_TYPE_CONSUMER)) {
                         userDetails = this.consumerDetailsService.loadUserByUsername(username);
@@ -127,7 +130,7 @@ public class CustomAuthFilter extends OncePerRequestFilter {
                     }
                     if (userDetails == null) {
                         throw new ApiException("User not found with username: " + username);
-                    } else if (JwtUtil.validateToken(headerToken, userDetails)) {
+                    } else if (jwtUtil.validateToken(headerToken, userDetails)) {
                         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
