@@ -83,7 +83,7 @@ public class Consumer {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Column(name = "is_email_verified",columnDefinition = "boolean default false",nullable = false)
+    @Column(name = "is_email_verified",nullable = false)
     private Boolean isEmailVerified;
 
 
