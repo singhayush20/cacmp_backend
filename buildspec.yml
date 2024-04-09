@@ -1,0 +1,32 @@
+version: 0.1
+phases:
+  build:
+    commands:
+      - echo Packaging JAR file
+      - mvn clean package
+    env:
+      variables:
+        CLOUDINARY_API_KEY: "${{ CLOUDINARY_API_KEY }}"
+        CLOUDINARY_API_SECRET: "${{ CLOUDINARY_API_SECRET }}"
+        CLOUDINARY_CLOUD_NAME: "${{ CLOUDINARY_CLOUD_NAME }}"
+        EMAIL_USERNAME: "${{ EMAIL_USERNAME }}"
+        EMAIL_PASSWORD: "${{ EMAIL_PASSWORD }}"
+        TWILIO_ACCOUNT_SID: "${{ TWILIO_ACCOUNT_SID }}"
+        TWILIO_AUTH_TOKEN: "${{ TWILIO_AUTH_TOKEN }}"
+        TWILIO_SERVICE_SID: "${{ TWILIO_SERVICE_SID }}"
+        JWT_SECRET_KEY: "${{ JWT_SECRET_KEY }}"
+        SPRING_DATASOURCE_URL: "${{ SPRING_DATASOURCE_URL }}"
+        SPRING_DATASOURCE_USERNAME: "${{ SPRING_DATASOURCE_USERNAME }}"
+        SPRING_DATASOURCE_PASSWORD: "${{ SPRING_DATASOURCE_PASSWORD }}"
+        AWS_ACCESS_KEY: "${{ AWS_ACCESS_KEY }}"
+        AWS_SECRET_KEY: "${{ AWS_SECRET_KEY }}"
+        AWS_BUCKET_NAME: "${{ AWS_BUCKET_NAME }}"
+        AWS_BUCKET_REGION: "${{ AWS_BUCKET_REGION }}"
+
+  post_build:
+    commands:
+      - echo Build complete
+artifacts:
+  files:
+    - target/municipal-hub-backend.jar
+  discard-paths: yes

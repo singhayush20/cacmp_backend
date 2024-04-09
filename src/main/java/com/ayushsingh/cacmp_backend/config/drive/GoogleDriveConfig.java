@@ -9,6 +9,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @Configuration
+@Profile("dev")
 public class GoogleDriveConfig {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();

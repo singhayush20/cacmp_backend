@@ -1,4 +1,4 @@
-package com.ayushsingh.cacmp_backend.util.driveUtil;
+package com.ayushsingh.cacmp_backend.util.fileUtil;
 
 import com.ayushsingh.cacmp_backend.config.drive.DriveConfigurationProperties;
 import com.ayushsingh.cacmp_backend.models.dtos.driveFileDtos.UploadedFileDto;
@@ -7,6 +7,7 @@ import com.google.api.client.http.FileContent;
 
 import com.google.api.services.drive.Drive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +16,8 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl implements FileService{
+@Profile("dev")
+public class GoogleDriveFileServiceImpl implements FileService{
 
     private final Drive drive;
     private final DriveConfigurationProperties driveConfigurationProperties;

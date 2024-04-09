@@ -22,6 +22,7 @@ import java.util.List;
 public class AlertController {
 
     private final AlertService alertService;
+//    private final AzureStorageAccountFIleServiceImpl azureStorageAccountFIleService;
 
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
@@ -83,5 +84,14 @@ public class AlertController {
         return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
     }
 
+//    @PostMapping("/upload/test")
+//    public UploadedFileDto uploadFileTest(@RequestPart("file") MultipartFile file){
+//        return azureStorageAccountFIleService.uploadFile(file);
+//    }
+//
+//    @DeleteMapping("/delete/test")
+//    public Boolean deleteFile(@RequestParam String fileName){
+//        return azureStorageAccountFIleService.deleteFile(fileName);
+//    }
 
 }

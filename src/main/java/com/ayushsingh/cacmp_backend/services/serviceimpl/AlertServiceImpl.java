@@ -17,7 +17,7 @@ import com.ayushsingh.cacmp_backend.repository.filterDto.AlertFilter;
 import com.ayushsingh.cacmp_backend.repository.paginationDto.PaginationDto;
 import com.ayushsingh.cacmp_backend.repository.specifications.alert.AlertSpecification;
 import com.ayushsingh.cacmp_backend.services.AlertService;
-import com.ayushsingh.cacmp_backend.util.driveUtil.FileService;
+import com.ayushsingh.cacmp_backend.util.fileUtil.FileService;
 import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import com.ayushsingh.cacmp_backend.util.imageUtil.ImageService;
 import jakarta.transaction.Transactional;
@@ -98,6 +98,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Transactional
+
     @Override
     public String updateStatus (StatusUpdateDto statusUpdateDto) {
         String alertToken = statusUpdateDto.getToken();

@@ -1,5 +1,6 @@
 package com.ayushsingh.cacmp_backend;
 
+import com.ayushsingh.cacmp_backend.config.awsS3Config.AwsS3ConfigurationProperties;
 import com.ayushsingh.cacmp_backend.config.cloudinary.CloudinaryConfigurationProperties;
 import com.ayushsingh.cacmp_backend.config.drive.DriveConfigurationProperties;
 import com.ayushsingh.cacmp_backend.config.email.EmailConfigurationProperties;
@@ -16,7 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-@EnableConfigurationProperties({CloudinaryConfigurationProperties.class, EmailConfigurationProperties.class, TwilioConfigurationProperties.class, DriveConfigurationProperties.class})
+@EnableConfigurationProperties({
+		CloudinaryConfigurationProperties.class,
+		EmailConfigurationProperties.class,
+		TwilioConfigurationProperties.class,
+		DriveConfigurationProperties.class,
+		AwsS3ConfigurationProperties.class})
 public class CacmpBackendApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
