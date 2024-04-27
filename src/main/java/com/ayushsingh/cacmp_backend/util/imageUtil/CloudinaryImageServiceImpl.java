@@ -18,7 +18,6 @@ public class CloudinaryImageServiceImpl implements ImageService {
 
     private final Cloudinary cloudinary;
 
-
     @Override
     public Map<String, Object> uploadComplaintImage(MultipartFile file) {
 
@@ -88,7 +87,7 @@ public class CloudinaryImageServiceImpl implements ImageService {
             cloudinary.uploader().destroy(publicId, uploadOptions);
         } catch (IOException e) {
             log.error("Error while deleting video: {}", e.getMessage());
-            throw new ApiException("Error while deleting video");
+            return false;
         }
         return true;
     }
@@ -102,7 +101,7 @@ public class CloudinaryImageServiceImpl implements ImageService {
             cloudinary.uploader().destroy(publicId, uploadOptions);
         } catch (IOException e) {
             log.error("Error while deleting image: {}", e.getMessage());
-            throw new ApiException("Error while deleting image");
+            return false;
         }
         return true;
     }

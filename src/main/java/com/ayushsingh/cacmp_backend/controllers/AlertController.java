@@ -22,52 +22,54 @@ import java.util.List;
 public class AlertController {
 
     private final AlertService alertService;
-//    private final AzureStorageAccountFIleServiceImpl azureStorageAccountFIleService;
 
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @PostMapping("/new")
-    public ResponseEntity<ApiResponse<String>> createAlert (@RequestBody AlertCreateDto alertCreateDto) {
+    public ResponseEntity<ApiResponse<String>> createAlert(@RequestBody AlertCreateDto alertCreateDto) {
         String token = alertService.createAlert(alertCreateDto);
         return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.CREATED);
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<AlertDetailsDto>> getAlertDetails (@RequestParam("token") String token) {
+    public ResponseEntity<ApiResponse<AlertDetailsDto>> getAlertDetails(@RequestParam("token") String token) {
         AlertDetailsDto alertDetailsDto = this.alertService.getAlertDetails(token);
         return new ResponseEntity<>(new ApiResponse<>(alertDetailsDto), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @PostMapping("/upload/image")
-    public ResponseEntity<ApiResponse<String>> saveAlertImages (@RequestParam("token") String token, @RequestPart("images") MultipartFile[] images) {
-        return new ResponseEntity<>(new ApiResponse<>(this.alertService.saveAlertImages(token, images)), HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<String>> saveAlertImages(@RequestParam("token") String token,
+            @RequestPart("images") MultipartFile[] images) {
+        return new ResponseEntity<>(new ApiResponse<>(this.alertService.saveAlertImages(token, images)),
+                HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @PostMapping("/upload/file")
-    public ResponseEntity<ApiResponse<String>> saveAlertFiles (@RequestParam("token") String token, @RequestPart("file") MultipartFile[] files) {
+    public ResponseEntity<ApiResponse<String>> saveAlertFiles(@RequestParam("token") String token,
+            @RequestPart("file") MultipartFile[] files) {
         String alertToken = alertService.uploadFiles(token, files);
         return new ResponseEntity<>(new ApiResponse<>(alertToken), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @PutMapping("/update-status")
-    public ResponseEntity<ApiResponse<String>> updateStatus (@RequestBody StatusUpdateDto statusUpdateDto) {
+    public ResponseEntity<ApiResponse<String>> updateStatus(@RequestBody StatusUpdateDto statusUpdateDto) {
         return new ResponseEntity<>(new ApiResponse<>(this.alertService.updateStatus(statusUpdateDto)), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<AlertDeptListDto>>> listAlertsByDepartment (
+    public ResponseEntity<ApiResponse<List<AlertDeptListDto>>> listAlertsByDepartment(
             @RequestParam("token") String token,
-            @RequestParam(value = "sortBy",required = false) String sortBy,
-    @RequestParam(value = "status",required = false) PublishStatus status) {
+            @RequestParam(value = "sortBy", required = false) String sortBy,
+            @RequestParam(value = "status", required = false) PublishStatus status) {
 
-       AlertFilter filter = new AlertFilter();
+        AlertFilter filter = new AlertFilter();
         filter.setPublishStatus(status);
         Sort sort = sortBy != null ? Sort.by(sortBy) : Sort.by("createdAt");
         sort = sort.descending();
-        List<AlertDeptListDto> alerts = this.alertService.listAlertsByDepartment( filter, sort);
+        List<AlertDeptListDto> alerts = this.alertService.listAlertsByDepartment(filter, sort);
         return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
     }
 
@@ -79,19 +81,18 @@ public class AlertController {
     }
 
     @GetMapping("/web/feed")
-    public ResponseEntity<ApiResponse<List<AlertFeedDto>>> getAlertWebFeed(@RequestParam("sortBy") String sortBy, @RequestParam("sortDirection") String sortDirection, @RequestParam("pageCount") int pageNumber, @RequestParam("pageSize") int pageSize) {
-        List<AlertFeedDto> alerts = this.alertService.getAlertFeed(new PaginationDto(pageNumber, pageSize, sortBy, sortDirection));
+    public ResponseEntity<ApiResponse<List<AlertFeedDto>>> getAlertWebFeed(@RequestParam("sortBy") String sortBy,
+            @RequestParam("sortDirection") String sortDirection, @RequestParam("pageCount") int pageNumber,
+            @RequestParam("pageSize") int pageSize) {
+        List<AlertFeedDto> alerts = this.alertService
+                .getAlertFeed(new PaginationDto(pageNumber, pageSize, sortBy, sortDirection));
         return new ResponseEntity<>(new ApiResponse<>(alerts), HttpStatus.OK);
     }
 
-//    @PostMapping("/upload/test")
-//    public UploadedFileDto uploadFileTest(@RequestPart("file") MultipartFile file){
-//        return azureStorageAccountFIleService.uploadFile(file);
-//    }
-//
-//    @DeleteMapping("/delete/test")
-//    public Boolean deleteFile(@RequestParam String fileName){
-//        return azureStorageAccountFIleService.deleteFile(fileName);
-//    }
-
+    @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
+    @DeleteMapping("/{alertToken}")
+    public ResponseEntity<ApiResponse<String>> deleteArticle(@PathVariable("alertToken") String alertToken) {
+        String response = this.alertService.deleteAlert(alertToken);
+        return new ResponseEntity<>(new ApiResponse<>(response), HttpStatus.OK);
+    }
 }

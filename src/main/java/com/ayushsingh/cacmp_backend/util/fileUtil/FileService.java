@@ -7,7 +7,7 @@ public interface FileService {
 
     UploadedFileDto uploadFile(MultipartFile file);
 
-    default Boolean deleteFile(String fileName){
+    default Boolean deleteFile(String fileId){
         return null;
     }
 }

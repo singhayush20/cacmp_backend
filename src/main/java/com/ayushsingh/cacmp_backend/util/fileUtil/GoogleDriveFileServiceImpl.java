@@ -7,14 +7,18 @@ import com.google.api.client.http.FileContent;
 
 import com.google.api.services.drive.Drive;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Profile("dev")
 public class GoogleDriveFileServiceImpl implements FileService{
@@ -48,4 +52,18 @@ public class GoogleDriveFileServiceImpl implements FileService{
             throw new ApiException(e.getMessage());
         }
     }
+
+    @Override
+    public Boolean deleteFile(String fileId) {
+        try{
+            drive.files().delete(fileId).execute();
+            return true;
+        }
+        catch(IOException e){
+            log.error("Error deleting file with id: ", fileId);
+            return false;
+        }
+    }
+
+    
 }

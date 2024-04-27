@@ -22,6 +22,8 @@ import com.ayushsingh.cacmp_backend.util.exceptionUtil.ApiException;
 import com.ayushsingh.cacmp_backend.util.imageUtil.ImageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AlertServiceImpl implements AlertService {
 
@@ -52,8 +56,9 @@ public class AlertServiceImpl implements AlertService {
     private final DepartmentRepository departmentRepository;
 
     @Override
-    public String createAlert (AlertCreateDto alertCreateDto) {
-        Department department = this.departmentRepository.findByDepartmentToken(alertCreateDto.getDepartmentToken()).orElseThrow(() -> new ApiException("Department not found"));
+    public String createAlert(AlertCreateDto alertCreateDto) {
+        Department department = this.departmentRepository.findByDepartmentToken(alertCreateDto.getDepartmentToken())
+                .orElseThrow(() -> new ApiException("Department not found"));
         Alert alert = new Alert();
         alert.setDepartment(department);
         alert.setInputType(alertCreateDto.getAlertInputType());
@@ -64,7 +69,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public AlertDetailsDto getAlertDetails (String token) {
+    public AlertDetailsDto getAlertDetails(String token) {
         Alert alert = alertRepository.findByAlertToken(token).orElseThrow(() -> new ApiException("Alert not found"));
         AlertDetailsDto alertDetailsDto = new AlertDetailsDto();
         alertDetailsDto.setAlertToken(token);
@@ -75,15 +80,17 @@ public class AlertServiceImpl implements AlertService {
         alertDetailsDto.setPublishedOn(alert.getPublishedOn());
         List<String> imageUrls = this.alertImageRepository.findAllUrlsByAlertId(token);
         alertDetailsDto.setAlertImages(imageUrls);
-        List<AlertDocumentUrlProjection> documentUrlProjections = this.alertDocumentRepository.findAllByAlertToken(token);
+        List<AlertDocumentUrlProjection> documentUrlProjections = this.alertDocumentRepository
+                .findAllByAlertToken(token);
         alertDetailsDto.setAlertDocuments(documentUrlProjections);
         return alertDetailsDto;
     }
 
     @Transactional
     @Override
-    public String saveAlertImages (String token, MultipartFile[] images) {
-        Alert alert = this.alertRepository.findByAlertToken(token).orElseThrow(() -> new ApiException("Alert not found"));
+    public String saveAlertImages(String token, MultipartFile[] images) {
+        Alert alert = this.alertRepository.findByAlertToken(token)
+                .orElseThrow(() -> new ApiException("Alert not found"));
         for (MultipartFile image : images) {
             Map<String, Object> uploadResult = imageService.uploadAlertImage(image);
             AlertImage alertImage = new AlertImage();
@@ -100,10 +107,11 @@ public class AlertServiceImpl implements AlertService {
     @Transactional
 
     @Override
-    public String updateStatus (StatusUpdateDto statusUpdateDto) {
+    public String updateStatus(StatusUpdateDto statusUpdateDto) {
         String alertToken = statusUpdateDto.getToken();
         PublishStatus publishStatus = statusUpdateDto.getPublishStatus();
-        Alert alert = this.alertRepository.findByAlertToken(alertToken).orElseThrow(() -> new ApiException("Alert not found"));
+        Alert alert = this.alertRepository.findByAlertToken(alertToken)
+                .orElseThrow(() -> new ApiException("Alert not found"));
         if (alert.getPublishStatus() == publishStatus) {
             throw new ApiException("New and old status cannot be same!");
         }
@@ -119,8 +127,9 @@ public class AlertServiceImpl implements AlertService {
 
     @Transactional
     @Override
-    public String uploadFiles (String alertToken, MultipartFile[] multipartFiles) {
-        Alert alert = alertRepository.findByAlertToken(alertToken).orElseThrow(() -> new ApiException("Alert not found!"));
+    public String uploadFiles(String alertToken, MultipartFile[] multipartFiles) {
+        Alert alert = alertRepository.findByAlertToken(alertToken)
+                .orElseThrow(() -> new ApiException("Alert not found!"));
         for (MultipartFile file : multipartFiles) {
             UploadedFileDto fileDto = fileService.uploadFile(file);
             AlertDocument alertDocument = new AlertDocument();
@@ -136,7 +145,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public List<AlertDeptListDto> listAlertsByDepartment (AlertFilter alertFilter, Sort sort) {
+    public List<AlertDeptListDto> listAlertsByDepartment(AlertFilter alertFilter, Sort sort) {
         Specification<Alert> spec = AlertSpecification.filterAlerts(alertFilter);
         List<Alert> alerts = alertRepository.findAll(spec, sort);
         return alerts.stream().map(alert -> {
@@ -152,7 +161,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public List<AlertFeedDto> getAlertFeed (PaginationDto paginationDto) {
+    public List<AlertFeedDto> getAlertFeed(PaginationDto paginationDto) {
         Sort sort = null;
         if (paginationDto.getSortBy() != null) {
             sort = Sort.by(paginationDto.getSortBy());
@@ -166,19 +175,50 @@ public class AlertServiceImpl implements AlertService {
             sort = Sort.by("publishedOn").descending();
         }
         Pageable pageable = PageRequest.of(paginationDto.getPageNumber(), paginationDto.getPageSize(), sort);
-        Page<Alert> alertPage = alertRepository.findAllByPublishStatus(PublishStatus.PUBLISHED,pageable);
-        List<Alert> alerts=alertPage.getContent();
+        Page<Alert> alertPage = alertRepository.findAllByPublishStatus(PublishStatus.PUBLISHED, pageable);
+        List<Alert> alerts = alertPage.getContent();
         return alerts.stream().map(alert -> {
             AlertFeedDto alertFeedDto = new AlertFeedDto();
             alertFeedDto.setAlertToken(alert.getAlertToken());
             alertFeedDto.setSubject(alert.getSubject());
             alertFeedDto.setPublishedOn(alert.getPublishedOn());
             alertFeedDto.setAlertInputType(alert.getInputType());
-            if(alert.getInputType()== AlertInputType.DOCUMENT){
-                List<AlertDocumentUrlProjection> documentUrlProjections = this.alertDocumentRepository.findAllByAlertToken(alert.getAlertToken());
+            if (alert.getInputType() == AlertInputType.DOCUMENT) {
+                List<AlertDocumentUrlProjection> documentUrlProjections = this.alertDocumentRepository
+                        .findAllByAlertToken(alert.getAlertToken());
                 alertFeedDto.setAlertDocuments(documentUrlProjections);
             }
             return alertFeedDto;
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public String deleteAlert(String alertToken) {
+        Alert alert = this.alertRepository.findByAlertToken(alertToken)
+                .orElseThrow(() -> new ApiException("Alert with with id: " + alertToken + " not found!"));
+        AlertInputType alertInputType = alert.getInputType();
+        if (alertInputType.equals(AlertInputType.DOCUMENT)) {
+            Set<AlertDocument> alertDocuments = alert.getAlertDocuments();
+            for (AlertDocument alertDocument : alertDocuments) {
+                Boolean isDeleted = this.fileService.deleteFile(alertDocument.getDocumentToken());
+                if (isDeleted) {
+                    alertDocumentRepository.delete(alertDocument);
+                } else {
+                    log.error("Error deleting the document from storage. Record will not be deleted for {}",
+                            alertDocument.getDocumentName());
+                }
+            }
+        } else if (alertInputType.equals(AlertInputType.TEXT)) {
+            Set<AlertImage> alertImages = alert.getAlertImages();
+            for (AlertImage alertImage : alertImages) {
+                Boolean isDeleted = this.imageService.deleteAlertImage(alertImage.getPublicId());
+                if (isDeleted) {
+                    this.alertImageRepository.delete(alertImage);
+                }
+            }
+        }
+        this.alertRepository.delete(alert);
+        return "Alert deleted successfully!";
     }
 }

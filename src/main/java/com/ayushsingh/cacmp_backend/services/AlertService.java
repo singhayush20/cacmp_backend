@@ -24,4 +24,6 @@ public interface AlertService {
 
     List<AlertFeedDto> getAlertFeed(PaginationDto pageDto);
 
+    String deleteAlert(String alertToken);
+
 }
