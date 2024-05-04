@@ -54,6 +54,6 @@ public interface PollRepository extends JpaRepository<Poll, Long>, JpaSpecificat
     void deleteByPollToken (String pollToken);
 
 
-    @Query("SELECT COUNT(p) FROM Poll p WHERE p.department.deptToken = :departmentToken")
+    @Query("SELECT COUNT(p) FROM Poll p WHERE p.department.deptToken = :departmentToken AND p.isLive = true")
     Long countByDepartmentToken (String departmentToken);
 }

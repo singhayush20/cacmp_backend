@@ -22,4 +22,6 @@ public class UserDetailsDto {
 
     private Set<String> roles;
 
+    private String email;
+
 }

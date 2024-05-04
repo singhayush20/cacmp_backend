@@ -5,6 +5,7 @@ import com.ayushsingh.cacmp_backend.constants.AppConstants;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserDetailsDto;
+import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserPasswordResetDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserRegisterDto;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
 import com.ayushsingh.cacmp_backend.services.RefreshTokenService;
@@ -22,6 +23,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -104,7 +109,16 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> updateUser(@RequestBody UserDetailsDto userDetailsDto){
         String token=userService.updateUser(userDetailsDto);
         return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
+    }
 
+    @GetMapping("/password/reset")
+    public ResponseEntity<ApiResponse<String>> sendPasswordChangeVerificationOTP(@RequestParam("email") String email) {
+        return new ResponseEntity<>(new ApiResponse<>(this.userService.sendPasswordVerificationOTP(email)), HttpStatus.OK);
+    }
+
+    @PutMapping("password/change")
+    public ResponseEntity<ApiResponse<String>>putMethodName(@RequestBody UserPasswordResetDto userPasswordResetDto) {
+        return new ResponseEntity<>(new ApiResponse<>(this.userService.resetPassword(userPasswordResetDto)), HttpStatus.OK);
     }
 
 }

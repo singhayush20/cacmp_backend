@@ -5,21 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterDto {
-
-    private String username;
-
-    private String password;
-
-    private String name;
-
-    private Set<String> roles;
-
+public class UserPasswordResetDto {
     private String email;
+    private String newPassword;
+    private Integer otp;
 }

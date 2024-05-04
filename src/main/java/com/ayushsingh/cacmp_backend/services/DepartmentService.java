@@ -1,6 +1,7 @@
 package com.ayushsingh.cacmp_backend.services;
 
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentDetailsDto;
+import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentPasswordChangeDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
 import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 
@@ -23,4 +24,6 @@ public interface DepartmentService {
     String updateDepartment(DepartmentDetailsDto departmentDetailsDto);
 
     List<DepartmentNameProjection> getDepartmentNames();
+
+    String updateDepartmentPassword(DepartmentPasswordChangeDto departmentPasswordChangeDto);
 }

@@ -41,23 +41,21 @@ public class Department {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Alert> alerts = new HashSet<>();
 
-
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH }, orphanRemoval = true)
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Poll> polls = new HashSet<>();
 
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Article> articles = new HashSet<>();
 
-
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "departments_department_role", joinColumns = @JoinColumn(name = "department_id", referencedColumnName = "department_id"), inverseJoinColumns =
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+    @JoinTable(name = "departments_department_role", joinColumns = @JoinColumn(name = "department_id", referencedColumnName = "department_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     private Set<DepartmentRole> roles;
 
     @CreatedDate
@@ -71,21 +69,23 @@ public class Department {
     private Date updatedAt;
 
     @PrePersist
-    public void generateToken () {
+    public void generateToken() {
         if (this.deptToken == null) {
             this.deptToken = UUID.randomUUID().toString();
         }
     }
 
     @Override
-    public int hashCode () {
+    public int hashCode() {
         return Objects.hash(username);
     }
 
     @Override
-    public boolean equals (Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Department that = (Department) o;
         return Objects.equals(username, that.username);
     }

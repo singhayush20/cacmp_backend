@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Set;
 
-public interface ArticleMediaRepository extends JpaRepository<ArticleMedia, String> {
+public interface ArticleMediaRepository extends JpaRepository<ArticleMedia, Long> {
 
 
 

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
@@ -54,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Long deleteCategory(String categoryToken) {
         Long count=complaintRepository.countComplaintsByCategoryToken(categoryToken);
         if(count!=0){
-            throw new ApiException("Category cannot be deleted because there are complaints associated with it");
+            throw new ApiException("Category cannot be deleted because there are several complaints associated with it");
         }
         categoryRepository.deleteByCategoryToken(categoryToken);
         return categoryRepository.count();

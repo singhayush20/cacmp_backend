@@ -43,6 +43,9 @@ public class User {
     @Column(name = "user_token", nullable = false, unique = true)
     private String userToken;
 
+    @Column(name="email",nullable=false,unique = true)
+    private String email;
+
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
@@ -53,7 +56,9 @@ public class User {
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_user_role", joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "role_id"))
+    @JoinTable(name = "users_user_role",
+            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "role_id"))
     private Set<UserRole> roles;
 
     @CreatedDate

@@ -6,6 +6,7 @@ import com.ayushsingh.cacmp_backend.models.dtos.authDtos.RefreshTokenDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginRequestDto;
 import com.ayushsingh.cacmp_backend.models.dtos.authDtos.LoginResponseDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentDetailsDto;
+import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentPasswordChangeDto;
 import com.ayushsingh.cacmp_backend.models.dtos.departmentDtos.DepartmentRegisterDto;
 import com.ayushsingh.cacmp_backend.models.projections.department.DepartmentNameProjection;
 import com.ayushsingh.cacmp_backend.models.securityModels.jwt.RefreshToken;
@@ -38,18 +39,20 @@ public class DepartmentController {
 
     @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<String>> register(@RequestBody DepartmentRegisterDto departmentRegisterDto){
-        String token=departmentService.registerDepartment(departmentRegisterDto);
+    public ResponseEntity<ApiResponse<String>> register(@RequestBody DepartmentRegisterDto departmentRegisterDto) {
+        String token = departmentService.registerDepartment(departmentRegisterDto);
         return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.CREATED);
     }
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponseDto>> login(HttpServletResponse httpServletResponse) {
         if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String token=departmentService.getDepartmentToken(username);
+            String token = departmentService.getDepartmentToken(username);
             String accessToken = jwtUtil.generateToken(username, AppConstants.ENTITY_TYPE_DEPARTMENT);
             CookieUtil.create(httpServletResponse, accessTokenCookieName, accessToken, false, -1, "localhost");
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(username, AppConstants.ENTITY_TYPE_DEPARTMENT);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(username,
+                    AppConstants.ENTITY_TYPE_DEPARTMENT);
             LoginResponseDto loginResponseDto = new LoginResponseDto();
             loginResponseDto.setAccessToken(accessToken);
             loginResponseDto.setToken(token);
@@ -63,58 +66,68 @@ public class DepartmentController {
 
     @PreAuthorize("hasRole('ROLE_DEPARTMENT')")
     @GetMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response){
-        CookieUtil.clear(response,accessTokenCookieName);
-        return new ResponseEntity<>(new ApiResponse<>("Logged out successfully"),HttpStatus.OK);
+    public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response) {
+        CookieUtil.clear(response, accessTokenCookieName);
+        return new ResponseEntity<>(new ApiResponse<>("Logged out successfully"), HttpStatus.OK);
     }
 
     @PutMapping("/refresh-token")
-    public ResponseEntity<ApiResponse<String>> refreshJwtToken(@RequestBody RefreshTokenDto refreshTokenDto, HttpServletResponse httpServletResponse) {
-        Boolean isRefreshTokenValid=this.refreshTokenService.verifyRefreshToken(refreshTokenDto.getRefreshToken());
-        if(isRefreshTokenValid){
-            String token= jwtUtil.generateToken(refreshTokenDto.getUsername(), AppConstants.ENTITY_TYPE_DEPARTMENT);
+    public ResponseEntity<ApiResponse<String>> refreshJwtToken(@RequestBody RefreshTokenDto refreshTokenDto,
+            HttpServletResponse httpServletResponse) {
+        Boolean isRefreshTokenValid = this.refreshTokenService.verifyRefreshToken(refreshTokenDto.getRefreshToken());
+        if (isRefreshTokenValid) {
+            String token = jwtUtil.generateToken(refreshTokenDto.getUsername(), AppConstants.ENTITY_TYPE_DEPARTMENT);
             CookieUtil.create(httpServletResponse, accessTokenCookieName, token, false, -1, "localhost");
-            return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(new ApiResponse<>("The refresh token is expired! Cannot generate a new token! Please re-login"),HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    new ApiResponse<>("The refresh token is expired! Cannot generate a new token! Please re-login"),
+                    HttpStatus.OK);
         }
     }
+
     @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<DepartmentDetailsDto>>> getAllDepartments(){
-        List<DepartmentDetailsDto> departments=departmentService.listAllDepartments();
-        return new ResponseEntity<>(new ApiResponse<>(departments),HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<DepartmentDetailsDto>>> getAllDepartments() {
+        List<DepartmentDetailsDto> departments = departmentService.listAllDepartments();
+        return new ResponseEntity<>(new ApiResponse<>(departments), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @DeleteMapping("/{departmentToken}")
-    public ResponseEntity<ApiResponse<String>> deleteDepartment(@PathVariable String departmentToken){
+    public ResponseEntity<ApiResponse<String>> deleteDepartment(@PathVariable String departmentToken) {
         departmentService.deleteDepartment(departmentToken);
-        return new ResponseEntity<>(new ApiResponse<>("Department deleted successfully"),HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>("Department deleted successfully"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN', 'ROLE_DEPARTMENT')")
     @GetMapping("/{departmentToken}")
-    public ResponseEntity<ApiResponse<DepartmentDetailsDto>> getDepartment(@PathVariable String departmentToken){
-        DepartmentDetailsDto department=departmentService.getDepartment(departmentToken);
-        return new ResponseEntity<>(new ApiResponse<>(department),HttpStatus.OK);
+    public ResponseEntity<ApiResponse<DepartmentDetailsDto>> getDepartment(@PathVariable String departmentToken) {
+        DepartmentDetailsDto department = departmentService.getDepartment(departmentToken);
+        return new ResponseEntity<>(new ApiResponse<>(department), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
     @PutMapping("")
-    public ResponseEntity<ApiResponse<String>> updateDepartment(@RequestBody DepartmentDetailsDto departmentDetailsDto){
-        String token=departmentService.updateDepartment(departmentDetailsDto);
-        return new ResponseEntity<>(new ApiResponse<>(token),HttpStatus.OK);
+    public ResponseEntity<ApiResponse<String>> updateDepartment(
+            @RequestBody DepartmentDetailsDto departmentDetailsDto) {
+        String token = departmentService.updateDepartment(departmentDetailsDto);
+        return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN', 'ROLE_DEPARTMENT')")
     @GetMapping("/names")
-    public ResponseEntity<ApiResponse<List<DepartmentNameProjection>>> getDepartmentNames(){
-        List<DepartmentNameProjection> departments=departmentService.getDepartmentNames();
-        return new ResponseEntity<>(new ApiResponse<>(departments),HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<DepartmentNameProjection>>> getDepartmentNames() {
+        List<DepartmentNameProjection> departments = departmentService.getDepartmentNames();
+        return new ResponseEntity<>(new ApiResponse<>(departments), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ROOT_ADMIN', 'ROLE_SUB_ADMIN')")
+    @PostMapping("/password/change")
+    public ResponseEntity<ApiResponse<String>> updatePassword(
+            @RequestBody DepartmentPasswordChangeDto departmentPasswordChangeDto) {
+        return new ResponseEntity<>(
+                new ApiResponse<>(departmentService.updateDepartmentPassword(departmentPasswordChangeDto)),
+                HttpStatus.OK);
+    }
 }
-
