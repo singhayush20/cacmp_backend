@@ -128,7 +128,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     public void sendPhoneVerificationOTP(Long phone) {
         Twilio.init(twilioConfigurationProperties.accountSid(), twilioConfigurationProperties.authToken());
         Verification verification = Verification.creator(twilioConfigurationProperties.serviceSid(),
-                        phone.toString(),
+                        "+91"+phone.toString(),
                         "sms")
                 .create();
         log.info("otp sent to: {}", phone);
@@ -139,7 +139,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         try {
             VerificationCheck verificationCheck = VerificationCheck.creator(
                             twilioConfigurationProperties.serviceSid())
-                    .setTo(phone.toString())
+                    .setTo("+91"+phone.toString())
                     .setCode(otp.toString())
                     .create();
             log.info("verification status: {}", verificationCheck.getStatus());

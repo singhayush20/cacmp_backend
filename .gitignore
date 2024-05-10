@@ -34,4 +34,3 @@ build/
 
 #Credentials
 src/main/resources/secrets.properties
-/cacmp-417114-3b716d377f0a.json

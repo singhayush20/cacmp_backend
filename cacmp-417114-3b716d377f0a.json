@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "cacmp-417114",
+  "private_key_id": "3b716d377f0a54fae1ed9a6ecfe80c3412be4e04",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCmyQC6Lyrl/BjB\nuCrheIOzgCurbrPC3DOHokhARdtdy2TzcAtSGl/mP22Clih8WcQgu59qsBLdgHW7\nVhb4BSDhiz0hRSS4HbnIeiWqEHybsYk7RHtmLtHri0UA6we7Kp9k4Upq2aSw1SkA\nBo8uLNluX4N1ccT4zaKw7s3m/mUnYVDPv/Wl5t3mn/tdIlzTmMhGPHL5LTa3gnHG\nfuigS4+dWf3prZYNIljEHJGLMbunKS8Ui2HNFsFOjXuISOGY8gCymTcuOJQKhzpR\ntZSLyLk4Vnbyvc4x02VMUUxmzPheur7T+4ON2YJWh1tDDR262MUZrz/4njIWs2kL\njmrqXxpbAgMBAAECggEAB4FB9B7NOl4WqxjjbRPkMT6SOHuZwSnxc6f8wk+iaF0P\npNik2cPwDsdJ4TdqiPXtGl/283EK2EbAhXaBQBXS/fMrBAU9er9zra65ZSaqxMK/\nXxhcySNQNN4mc70fsu9fDsYIeDhk7cQZvTOOW9CO1CWeH7nH2D5AlN+aCkvmN1hZ\n/wVg/49/AjVbhixGHBRkM++wo6rpPg4tEyA+zbg9nZOhD9Zg+qPU5mQO6Yq5P8hk\nkhdmqbys/XIlRiNX0K/yM9KZUxXuIrZ+dOEsXAsVzlszc79/cAi9xvHK9tkrJVgF\nRI1Eat+9JK33mzOtJ0DW4Mzme8q7pKOcVYa6I5ZmiQKBgQDkaPUQRs9Q3hMjxTyv\n0BRgtr+DdwB/La9wY0kwKgLeHMrul01RBht7n+JZCg8BVZsOy2JUzM37FlpIjpdt\nyU2FEgUBnz5Qm691eJOiTrVPbZG2iBCNOcv/IxNkV8KqWqkNuMozJaJbGxTOJeV7\n5hoxo5bzPxeGLvaZW57hh2av3QKBgQC67nFOrRcnfg7RjraDkzrEEg7mA+gPC3sO\neDCa3PmrAeIUqddjPEHY3lmIURM1Bc1K3fQeWdeDGwU28ac2hXEDw5SLLf1ejGPd\nNYeUNJ3jBqqNSmNc9kb1rw1NIrwA4ovdrSi4//G0WPP1cZh0AH8xqKMVMZBxc031\nWbqct7xrlwKBgQCDJt0ohnA+L/XvgS6SiTlaOzUGiMtJO3NUZj49ILJa1U+U5l3n\n20jmmGzA0azCCGSrfw8sQBk6RqB6rx22VXNkqG8lekmuwWZjXmPvO6CSRgj4NXLD\nlN9U1dAputa1OK9/iI7aBY8PHyK4KDx4Ay0hOZzQeXbJfqfscRZuy2+kJQKBgH0E\nNvc9P70Dy3lPDrVUY/r5cMlYV3yoWvZEX41SuA8sRT04kXomtIsLuak3P7c4WCH3\n6unZgA6IpaYnW4NVH047IT8r1MXE8ozg3fm6btWEgc/Yrjdf5fktx6GM11toJ85r\nnk6LreTFkPLXs/Pw2SAm/lqQOWAGk17BUdK59uOlAoGAKR3qzvdl15xWzENe+bl4\nsZm0TYTZ8OoHd/RbGnoB0u0oB0H1JXk225eF7EULNCiU48/iNr1rMs8syQOdgMeJ\nxHLmtyP449Bouqeo7ifVF3RT4gF8fSLEUET41OkoUQkM5ChTZ/a7AeUR9ngA5wf5\nJ+rI+LipbDjxFV3BNEcmBk4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "cacmp-google-drive@cacmp-417114.iam.gserviceaccount.com",
+  "client_id": "117038458719407413977",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cacmp-google-drive%40cacmp-417114.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
