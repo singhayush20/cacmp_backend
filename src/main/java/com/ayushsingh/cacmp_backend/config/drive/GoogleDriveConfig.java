@@ -19,7 +19,6 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @Configuration
-@Profile("dev")
 public class GoogleDriveConfig {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();

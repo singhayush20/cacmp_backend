@@ -20,7 +20,6 @@ import java.util.Collections;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Profile("dev")
 public class GoogleDriveFileServiceImpl implements FileService{
 
     private final Drive drive;
