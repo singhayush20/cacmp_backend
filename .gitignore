@@ -34,3 +34,5 @@ build/
 
 #Credentials
 src/main/resources/secrets.properties
+
+src/main/resources/application-dev2.properties

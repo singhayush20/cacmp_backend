@@ -29,4 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("SELECT u FROM User u WHERE u.email = ?1")
     public Optional<User> findByEmail(String username);
 
+    @Query("SELECT COUNT(u) FROM User u JOIN u.roles r WHERE r.roleName = 'ROLE_ROOT_ADMIN'")
+    Long countRootUsers();
+
 }

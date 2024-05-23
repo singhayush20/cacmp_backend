@@ -46,7 +46,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         String username = departmentDto.getUsername();
         Boolean isDepartmentCredentialsPresent = isDepartmentCredentialsPresent(username);
         if (isDepartmentCredentialsPresent) {
-            throw new RuntimeException("Department with username: " + username + " already exists");
+            throw new ApiException("Department with username: " + username + " already exists");
         } else {
             Department department = new Department();
             department.setUsername(username);

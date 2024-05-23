@@ -1,6 +1,7 @@
 package com.ayushsingh.cacmp_backend.services.serviceimpl;
 
 import com.ayushsingh.cacmp_backend.config.email.EmailConfigurationProperties;
+import com.ayushsingh.cacmp_backend.constants.AppConstants;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserDetailsDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserPasswordResetDto;
 import com.ayushsingh.cacmp_backend.models.dtos.userDtos.UserRegisterDto;
@@ -31,6 +32,7 @@ import java.util.Set;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private static final String ROLE_ROOT_USER = "ROLE_ROOT_USER";
     private final UserRepository userRepository;
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
@@ -92,6 +94,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUser(String userToken) {
+        Long rootUserCount=userRepository.countRootUsers();
+        User user=this.userRepository.findByUserToken(userToken).orElseThrow(()->new ApiException("User with user token: "+userToken+" does not exist"));
+        Set<UserRole> userRoles=user.getRoles();
+        if(rootUserCount==1){
+           boolean isARootUser= userRoles.stream().anyMatch(userRole->userRole.getRoleName().equals(ROLE_ROOT_USER));
+           if(isARootUser){
+            throw new ApiException("User cannot be deleted because this is the only root user");
+           }
+        }
         userRepository.deleteByUserToken(userToken);
     }
 
